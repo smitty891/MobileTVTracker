@@ -166,8 +166,8 @@ Ryan Smith
 
 ## Milestones
 
-[Milestones](TBD)
+[Milestones](https://github.com/smitty891/MobileTVTracker/projects/1)
 
 ## Weekly Stand-up
 
-[Sundays @ 8:00PM](LINK here)
+[Sundays @ 8:00PM](https://teams.microsoft.com/l/meetup-join/19%3ameeting_MGNlN2MzZTYtODZkMy00NmZkLWI0ZjMtNDQ4YjNkMmQ5NDVh%40thread.v2/0?context=%7b%22Tid%22%3a%22f5222e6c-5fc6-48eb-8f03-73db18203b63%22%2c%22Oid%22%3a%22cde19e27-29a9-4f05-b2cb-65028bb3508e%22%7d)
