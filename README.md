@@ -22,13 +22,9 @@ Additionally, TvTarcker will enable users to:
 
 ## Storyboard
 ### Home/Browse page
-![homebrowse](https://user-images.githubusercontent.com/59851587/107153567-36023280-693c-11eb-8ffe-2ddce05dfc25.PNG)
+![homebrowse]()
 ### Favorites
-![Favorites](https://user-images.githubusercontent.com/59851587/107153591-58944b80-693c-11eb-8148-779743f70550.jpg)
-### Login
-![login](https://user-images.githubusercontent.com/59851587/107153614-79f53780-693c-11eb-977a-89bf3adbb9fc.PNG)
-### Signup
-![signup](https://user-images.githubusercontent.com/59851587/107153628-972a0600-693c-11eb-80cb-893c4b5f92b9.PNG)
+![Favorites]()
 
 # Requirements  
 
@@ -98,7 +94,7 @@ Then: The user's feedback will be saved.
 
 ## Class Diagram
 
-![TvTrackerDiagram](https://github.com/smitty891/it4045c-project/blob/master/TvTrackerUML.png?raw=true)
+![TvTrackerDiagram]()
 
 ### Class Diagram Description
 **TvTrackerController** - contains all REST endpoints necessary for our user interface.
@@ -148,9 +144,6 @@ This is what we plan to export to another app.
 >      "type" : "string"
 >    },
 >    "title" : {
->      "type" : "string"
->    },
->    "username" : {
 >      "type" : "string"
 >    },
 >    "imageUrl" : {
