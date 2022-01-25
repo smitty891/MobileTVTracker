@@ -94,16 +94,9 @@ Then: The user's feedback will be saved.
 
 ## Class Diagram
 
-![TvTrackerDiagram]()
+![TvTrackerDiagram](https://github.com/smitty891/MobileTVTracker/blob/main/TvTrackerUML.png?raw=true)
 
 ### Class Diagram Description
-**TvTrackerController** - contains all REST endpoints necessary for our user interface.
-
-**IUserAccountService** - interface declaring all necessary methods for UserAccount related functionality.
-
-**UserAccountService** - contains implementation for all the methods in IUserAccountService.
-
-**UserAccountServiceStub** - implements IUserAccountService's methods with hardcoded return values for initial ui development.
 
 **IMediaEntryService** - interface declaring all necessary methods for MediaEntry related functionality.
 
@@ -111,13 +104,7 @@ Then: The user's feedback will be saved.
 
 **MediaEntryServiceStub** - implements IMediaEntryService's methods with hardcoded return values for initial ui development.
 
-**UserAccount** - carries UserAccount data between processes.
-
 **MediaEntry** -  carries MediaEntry data between processes.
-
-**IUserAccountDAO** - interface declaring the methods needed for UserAccount's data access object.
-
-**UserAccountDAO** - implements IUserAccountDAO allowing access to UserAccount records in our underlying database.
 
 **IMediaEntryDAO** - interface declaring the methods needed for MediaEntry's data access object.
 
