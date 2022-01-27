@@ -22,9 +22,9 @@ Additionally, TvTarcker will enable users to:
 
 ## Storyboard
 ### Home/Browse page
-![homebrowse](URL)
+![homebrowse]() URL HERE
 ### Favorites
-![Favorites](URL)
+![Favorites]() URL HERE
 
 # Requirements  
 
