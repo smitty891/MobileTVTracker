@@ -4,21 +4,21 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RetrofitClientInstance {
+object ImdbRetrofitClientInstance {
 
     private var retrofit: Retrofit? = null
-    private val IMDB_BASE_URL = "https://movie-database-imdb-alternative.p.rapidapi.com"
+    private val BASE_URL = "https://movie-database-imdb-alternative.p.rapidapi.com"
 
-    private val imdbClient = OkHttpClient.Builder().apply {
+    private val client = OkHttpClient.Builder().apply {
         addInterceptor(ImdbInterceptor())
     }.build()
 
-    val imdbRetrofitInstance : Retrofit?
+    val retrofitInstance : Retrofit?
         get() {
             if (retrofit == null) {
                 retrofit = Retrofit.Builder()
-                    .baseUrl(IMDB_BASE_URL)
-                    .client(imdbClient)
+                    .baseUrl(BASE_URL)
+                    .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             }
