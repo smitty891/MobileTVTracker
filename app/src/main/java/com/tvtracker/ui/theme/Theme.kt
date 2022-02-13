@@ -1,10 +1,13 @@
 package com.tvtracker.ui.theme
 
+import android.graphics.Color
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.White
 
 private val DarkColorPalette = darkColors(
         primary = Purple200,
@@ -13,18 +16,15 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-        primary = Purple500,
+        primary = MidGrey,
         primaryVariant = Purple700,
-        secondary = Teal200
-
-        /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+        secondary = Red,
+        background = Blue,
+        surface = Black,
+        onPrimary = White,
+        onSecondary = Black,
+        onBackground = Yellow,
+        onSurface = Red,
 )
 
 @Composable

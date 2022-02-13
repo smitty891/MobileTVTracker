@@ -1,6 +1,7 @@
 package com.tvtracker
 
 import android.content.res.Configuration
+import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.SearchView
 import android.widget.Toast
@@ -18,11 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tvtracker.ui.theme.TvTrackerTheme
+import java.time.format.TextStyle
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +36,7 @@ class MainActivity : ComponentActivity() {
             TvTrackerTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    TVTrackerMenu("Android")
+                    TVTrackerMenu()
                 }
             }
         }
@@ -39,13 +44,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TVTrackerMenu(name: String) {
+fun TVTrackerMenu() {
 
     var context = LocalContext.current
 
     Column(horizontalAlignment = Alignment.CenterHorizontally){
         Row{
-            Text(text = "TV Tracker", fontSize = 32.sp)
+            Text(text = "TV Tracker", fontSize = 32.sp, fontWeight = FontWeight.Bold)
         }
         Row{
             Column(modifier = Modifier.padding(16.dp)){
@@ -58,7 +63,7 @@ fun TVTrackerMenu(name: String) {
                 Button(onClick = {
 
                 },
-                    content = {Text(text = "Favourites")})
+                    content = {Text(text = "Favorites")})
             }
         }
         Row{
@@ -77,7 +82,7 @@ fun DefaultPreview() {
     TvTrackerTheme {
         Surface(color = MaterialTheme.colors.background,
             modifier = Modifier.fillMaxWidth().padding(12.dp)) {
-            TVTrackerMenu("Android")
+            TVTrackerMenu()
         }
     }
 }
