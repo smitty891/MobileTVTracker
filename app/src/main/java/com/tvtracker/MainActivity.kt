@@ -48,9 +48,9 @@ fun TVTrackerMenu() {
 
     var context = LocalContext.current
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally){
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally){
         Row{
-            Text(text = "TV Tracker", fontSize = 32.sp, fontWeight = FontWeight.Bold)
+            Text(text = "TV Tracker", fontSize = 60.sp, fontWeight = FontWeight.Bold)
         }
         Row{
             Column(modifier = Modifier.padding(16.dp)){
