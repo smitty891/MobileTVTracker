@@ -52,14 +52,21 @@ class MainActivity : ComponentActivity() {
                     val listState = rememberLazyListState()
                     Scaffold(
                         topBar = {
-                            SearchBar(
-                                onTextChanged = {
-                                    viewModel.searchTxt = it
-                                },
-                                onSearchClicked = {
-                                    viewModel.search(listState)
+                            Column {
+                                Row {
+                                    TVTrackerMenu()
                                 }
-                            )
+                                Row {
+                                    SearchBar(
+                                        onTextChanged = {
+                                            viewModel.searchTxt = it
+                                        },
+                                        onSearchClicked = {
+                                            viewModel.search(listState)
+                                        }
+                                    )
+                                }
+                            }
                          },
                         content = {
                             LazyColumn(state = listState) {
@@ -86,7 +93,7 @@ fun TVTrackerMenu() {
 
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally){
         Row{
-            Text(text = "TV Tracker", fontSize = 60.sp, fontWeight = FontWeight.Bold)
+            Text(text = "TV Tracker", fontSize = 35.sp, fontWeight = FontWeight.Bold)
         }
         Row{
             Column(modifier = Modifier.padding(16.dp)){
@@ -111,14 +118,27 @@ fun TVTrackerMenu() {
     }
 }
 
+@ExperimentalComposeUiApi
 @Preview(name="Light Mode", showBackground=true)
 @Preview(uiMode= Configuration.UI_MODE_NIGHT_YES, showBackground = true, name="Dark Mode")
 @Composable
-fun DefaultPreview() {
-    TvTrackerTheme {
-        Surface(color = MaterialTheme.colors.background,
-            modifier = Modifier.fillMaxWidth().padding(12.dp)) {
+fun TopBarPreview() {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row {
             TVTrackerMenu()
+        }
+        Row {
+            SearchBar(
+                onTextChanged = {
+
+                },
+                onSearchClicked = {
+
+                }
+            )
         }
     }
 }
@@ -132,43 +152,37 @@ fun SearchBar(
     var text by remember { mutableStateOf(TextFieldValue("")) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-    ) {
-        TextField(
-            value = text,
-            onValueChange = {
-                text = it
-                onTextChanged(it.text)
-            },
-            singleLine = true,
-            trailingIcon = {
-                IconButton(
-                    onClick = {
-                        onSearchClicked()
-                        keyboardController?.hide()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search Icon"
-                    )
-                }
-            },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(
-                onSearch = {
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = text,
+        onValueChange = {
+            text = it
+            onTextChanged(it.text)
+        },
+        singleLine = true,
+        trailingIcon = {
+            IconButton(
+                onClick = {
                     onSearchClicked()
                     keyboardController?.hide()
                 }
-            )
-
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search Icon"
+                )
+            }
+        },
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                onSearchClicked()
+                keyboardController?.hide()
+            }
         )
-    }
+    )
 }
 
 @Composable
