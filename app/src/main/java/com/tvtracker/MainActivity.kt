@@ -7,36 +7,72 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
+import com.tvtracker.dto.MediaItem
+import com.tvtracker.ui.main.BrowseViewModel
 import com.tvtracker.ui.theme.TvTrackerTheme
-import java.time.format.TextStyle
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: BrowseViewModel by viewModel<BrowseViewModel>()
+
+    @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             TvTrackerTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    TVTrackerMenu()
+                    val listState = rememberLazyListState()
+                    Scaffold(
+                        topBar = {
+                            SearchBar(
+                                onTextChanged = {
+                                    viewModel.searchTxt = it
+                                },
+                                onSearchClicked = {
+                                    viewModel.search(listState)
+                                }
+                            )
+                         },
+                        content = {
+                            LazyColumn(state = listState) {
+                                itemsIndexed(viewModel.mediaItems) { index, item ->
+                                    viewModel.onChangeScrollPosition(index)
+                                    if((index + 1) >= (viewModel.page * viewModel.PAGE_SIZE) && !viewModel.loading){
+                                        viewModel.nextPage()
+                                    }
+                                    MediaItemRow(item)
+                                }
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -83,6 +119,87 @@ fun DefaultPreview() {
         Surface(color = MaterialTheme.colors.background,
             modifier = Modifier.fillMaxWidth().padding(12.dp)) {
             TVTrackerMenu()
+        }
+    }
+}
+
+@ExperimentalComposeUiApi
+@Composable
+fun SearchBar(
+    onTextChanged: (String) -> Unit,
+    onSearchClicked: () -> Unit
+) {
+    var text by remember { mutableStateOf(TextFieldValue("")) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+    ) {
+        TextField(
+            value = text,
+            onValueChange = {
+                text = it
+                onTextChanged(it.text)
+            },
+            singleLine = true,
+            trailingIcon = {
+                IconButton(
+                    onClick = {
+                        onSearchClicked()
+                        keyboardController?.hide()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search Icon"
+                    )
+                }
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    onSearchClicked()
+                    keyboardController?.hide()
+                }
+            )
+
+        )
+    }
+}
+
+@Composable
+fun MediaItemRow(mediaItem: MediaItem) {
+
+    if(mediaItem.imageUrl == "N/A"){
+        mediaItem.imageUrl = "https://i.imgur.com/N6EvlmG.png"
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.height(210.dp)
+    ) {
+        Image(
+            painter = rememberImagePainter(mediaItem.imageUrl),
+            contentDescription = "Media Poster",
+            modifier = Modifier
+                .size(140.dp, 200.dp)
+                .padding(5.dp),
+            alignment = Alignment.CenterStart,
+            contentScale = ContentScale.FillBounds
+        )
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = CenterHorizontally
+        ) {
+            Text(mediaItem.title)
+            Text(mediaItem.year)
         }
     }
 }
