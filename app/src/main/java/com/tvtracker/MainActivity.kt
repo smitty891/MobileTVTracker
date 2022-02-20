@@ -18,6 +18,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -46,6 +47,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val mediaItems by viewModel.mediaItems.observeAsState(initial = emptyList())
+
             TvTrackerTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
@@ -70,7 +73,7 @@ class MainActivity : ComponentActivity() {
                          },
                         content = {
                             LazyColumn(state = listState) {
-                                itemsIndexed(viewModel.mediaItems) { index, item ->
+                                itemsIndexed(mediaItems) { index, item ->
                                     viewModel.onChangeScrollPosition(index)
                                     if((index + 1) >= (viewModel.page * viewModel.PAGE_SIZE) && !viewModel.loading){
                                         viewModel.nextPage()
