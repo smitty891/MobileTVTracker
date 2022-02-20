@@ -12,6 +12,8 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import junit.framework.Assert.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.newSingleThreadContext
 
 class IntegrationTests {
 
@@ -24,6 +26,7 @@ class IntegrationTests {
     lateinit var mockmediaService: mockMediaService //add
 
     var imdbResponse: ImdbResponse? = null
+    private val mainThreadSurrogate = newSingleThreadContext("Main Thread") 
 
     @Before //add
     fun initMocksAndMainThread() {
