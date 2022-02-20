@@ -8,9 +8,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
 
-class MediaService {
 
-    suspend fun searchIMDB(text: String, type: String, page: Int): ImdbResponse? {
+class MediaService : IMediaService {
+
+    override suspend fun searchIMDB(text: String, type: String, page: Int): ImdbResponse? {
         return withContext(Dispatchers.IO) {
             val service = ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
             val mediaItems = async {service?.searchIMDB(text, type, page)}

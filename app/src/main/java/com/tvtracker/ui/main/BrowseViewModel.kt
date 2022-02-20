@@ -8,10 +8,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tvtracker.dto.MediaItem
+import com.tvtracker.service.IMediaService
 import com.tvtracker.service.MediaService
 import kotlinx.coroutines.launch
 
-class BrowseViewModel(var mediaService: MediaService = MediaService()): ViewModel() {
+class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewModel() {
 
     val PAGE_SIZE = 10
 
