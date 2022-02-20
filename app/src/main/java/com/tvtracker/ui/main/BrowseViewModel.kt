@@ -4,13 +4,15 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tvtracker.dto.MediaItem
+import com.tvtracker.service.IMediaService
 import com.tvtracker.service.MediaService
 import kotlinx.coroutines.launch
 
-class BrowseViewModel(var mediaService: MediaService = MediaService()): ViewModel() {
+class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewModel() {
 
     val PAGE_SIZE = 10
 
@@ -24,7 +26,7 @@ class BrowseViewModel(var mediaService: MediaService = MediaService()): ViewMode
     private var currentSearchTxt = ""
     private var currentSearchType = ""
 
-    var mediaItems by mutableStateOf(emptyList<MediaItem>())
+    var mediaItems: MutableLiveData<List<MediaItem>> = MutableLiveData<List<MediaItem>>()
 
     init {
         search(null)
@@ -38,7 +40,7 @@ class BrowseViewModel(var mediaService: MediaService = MediaService()): ViewMode
 
             val imdbResponse = mediaService.searchIMDB(searchTxt, searchType, page)
             imdbResponse?.let {
-                mediaItems = it.results
+                mediaItems.postValue(it.results)
             }
 
             listState?.scrollToItem(0)
@@ -68,8 +70,8 @@ class BrowseViewModel(var mediaService: MediaService = MediaService()): ViewMode
     }
 
     private fun appendMediaItems(newMediaItems: List<MediaItem>) {
-        val current = ArrayList(mediaItems)
+        val current = ArrayList(mediaItems.value)
         current.addAll(newMediaItems)
-        mediaItems = current
+        mediaItems.postValue(current)
     }
 }
