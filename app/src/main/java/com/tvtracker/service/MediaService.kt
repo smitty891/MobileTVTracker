@@ -15,7 +15,8 @@ class MediaService : IMediaService {
         return withContext(Dispatchers.IO) {
             val service = ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
             val mediaItems = async {service?.searchIMDB(text, type, page)}
-            return@withContext mediaItems.await()?.awaitResponse()?.body()
+            var result = mediaItems.await()?.awaitResponse()?.body()
+            return@withContext result
         }
     }
 }

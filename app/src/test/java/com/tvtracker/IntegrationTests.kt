@@ -14,8 +14,25 @@ class IntegrationTests {
     @get: Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
-    lateinit var mediaService: MediaService
+    lateinit var bvm : BrowseViewModel //(add)
+
+    @MockK //(add)
+    lateinit var mockmediaService: mockMediaService //add
+
     var imdbResponse: ImdbResponse? = null
+
+    @Before //add
+    fun initMocksAndMainThread() {
+        MockKAnnotations.init(this)
+        Dispatchers.setMain(mainThreadSurrogate)
+    }
+
+    @After //add
+    fun tearDown() {
+        Dispatchers.resetMain()
+        mainThreadSurrogate.close()
+    }
+
 
     @Test
     fun `Given media data is available when I search BattleBots then I should receive media results` () = runTest {
@@ -24,7 +41,7 @@ class IntegrationTests {
         thenMediaResultsContainsBattleBots()
     }
     private fun givenMediaServiceIsInitialized() {
-        mediaService = MediaService()
+        bvm = BrowseViewModel(mediaService = MediaService) //add
     }
 
     private suspend fun whenUserSearchesBattleBots() {
