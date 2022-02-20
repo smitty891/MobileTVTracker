@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val mediaItems by viewModel.mediaItems.observeAsState(initial = emptyList())
+            val loading = viewModel.loading
 
             TvTrackerTheme {
                 // A surface container using the 'background' color from the theme
@@ -72,6 +73,7 @@ class MainActivity : ComponentActivity() {
                             }
                          },
                         content = {
+                            LoadingSpinner(isDisplayed = loading)
                             LazyColumn(state = listState) {
                                 itemsIndexed(mediaItems) { index, item ->
                                     viewModel.onChangeScrollPosition(index)
@@ -218,5 +220,22 @@ fun MediaItemRow(mediaItem: MediaItem) {
             Text(mediaItem.title)
             Text(mediaItem.year)
         }
+    }
+}
+
+@Composable
+fun LoadingSpinner( isDisplayed: Boolean ) {
+    if ( isDisplayed ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colors.onSecondary
+            )
+        }
+
     }
 }
