@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.tvtracker.dto.MediaItem
 import com.tvtracker.service.IMediaService
 import com.tvtracker.service.MediaService
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewModel() {
@@ -34,13 +35,24 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
 
     fun search(listState: LazyListState?){
         viewModelScope.launch {
+
+            // Resets search results whenever user searches for something new
+            resetSearch()
+
             currentSearchTxt = searchTxt
             currentSearchType = searchType
             page = 1
 
             val imdbResponse = mediaService.searchIMDB(searchTxt, searchType, page)
             imdbResponse?.let {
+
+                loading = true
+                /* delay to show that spinner is working */
+                delay(2000)
+
                 mediaItems.postValue(it.results)
+
+                loading = false
             }
 
             listState?.scrollToItem(0)
@@ -67,6 +79,10 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
 
     fun onChangeScrollPosition(position: Int){
         scrollPosition = position
+    }
+
+    private fun resetSearch() {
+        mediaItems.value = listOf()
     }
 
     private fun appendMediaItems(newMediaItems: List<MediaItem>) {
