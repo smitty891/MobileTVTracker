@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.tvtracker.dto.MediaItem
 import com.tvtracker.ui.main.BrowseViewModel
+import com.tvtracker.ui.theme.Black
 import com.tvtracker.ui.theme.TvTrackerTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -163,6 +164,9 @@ fun SearchBar(
         onValueChange = {
             text = it
             onTextChanged(it.text)
+        },
+        placeholder = {
+            Text( "Search for a movie or series" )
         },
         singleLine = true,
         trailingIcon = {
