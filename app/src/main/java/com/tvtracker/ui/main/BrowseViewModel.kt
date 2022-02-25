@@ -7,6 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.tvtracker.dto.MediaItem
 import com.tvtracker.service.IMediaService
 import com.tvtracker.service.MediaService
@@ -14,6 +16,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewModel() {
+
+    private lateinit var firestore: FirebaseFirestore
 
     val PAGE_SIZE = 10
 
@@ -30,6 +34,9 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     var mediaItems: MutableLiveData<List<MediaItem>> = MutableLiveData<List<MediaItem>>()
 
     init {
+        firestore = FirebaseFirestore.getInstance()
+        firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
+
         search(null)
     }
 
@@ -89,5 +96,9 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
         val current = ArrayList(mediaItems.value)
         current.addAll(newMediaItems)
         mediaItems.postValue(current)
+    }
+
+    fun save(mediaItem: MediaItem) {
+
     }
 }
