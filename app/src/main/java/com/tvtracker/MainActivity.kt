@@ -1,8 +1,12 @@
 package com.tvtracker
 
+import android.content.ContentValues.TAG
 import android.content.res.Configuration
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -32,6 +36,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
 import coil.compose.rememberImagePainter
 import com.tvtracker.dto.MediaItem
 import com.tvtracker.ui.main.BrowseViewModel
@@ -92,6 +97,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
+
 @Composable
 fun TVTrackerMenu() {
 
@@ -107,6 +114,7 @@ fun TVTrackerMenu() {
 
                 },
                     content = {Text(text = "Browse")})
+
             }
             Column(modifier = Modifier.padding(16.dp)){
                 Button(onClick = {
@@ -243,3 +251,11 @@ fun LoadingSpinner( isDisplayed: Boolean ) {
 
     }
 }
+
+@Composable
+fun mediaClicked() {
+// When an item is clicked
+}
+
+
+
