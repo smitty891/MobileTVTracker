@@ -44,7 +44,7 @@ import com.tvtracker.ui.theme.Black
 import com.tvtracker.ui.theme.TvTrackerTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-open class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() {
 
     private val viewModel: BrowseViewModel by viewModel<BrowseViewModel>()
 
