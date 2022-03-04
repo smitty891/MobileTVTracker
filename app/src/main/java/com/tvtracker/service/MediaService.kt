@@ -14,9 +14,8 @@ class MediaService : IMediaService {
     override suspend fun searchIMDB(text: String, type: String, page: Int): ImdbResponse? {
         return withContext(Dispatchers.IO) {
             val service = ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
-            val mediaItems = async {service?.searchIMDB(text, type, page)}
-            var result = mediaItems.await()?.awaitResponse()?.body()
-            return@withContext result
+            val mediaItems = async { service?.searchIMDB(text, type, page) }
+            return@withContext mediaItems.await()?.awaitResponse()?.body()
         }
     }
 }
