@@ -42,7 +42,8 @@ class IntegrationTests {
 
 
     @Test
-    fun `Given media data is available when I search BattleBots then I should receive media results` () = runTest {
+    fun `Given media data is available when I search BattleBots then I should receive media results`
+                () = runTest {
         givenMediaServiceIsInitialized()
         whenUserSearchesBattleBots()
         thenMediaResultsContainsBattleBots()
