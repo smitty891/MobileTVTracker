@@ -8,7 +8,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
 
-
+/**
+ * Parses JSON file and communicates with IMediaItemDAO to search data using corouutines.
+ */
 class MediaService : IMediaService {
 
     override suspend fun searchIMDB(text: String, type: String, page: Int): ImdbResponse? {

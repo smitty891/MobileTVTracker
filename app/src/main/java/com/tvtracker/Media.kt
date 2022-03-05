@@ -12,11 +12,13 @@ class Media : GestureDetector.SimpleOnGestureListener() {
         return super.onDown(e)
     }
 
-    override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+    override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float):
+            Boolean {
         return super.onFling(e1, e2, velocityX, velocityY)
     }
 
-    override fun onScroll (e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+    override fun onScroll (e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float):
+            Boolean {
         return super.onScroll(e1,e2,distanceX,distanceY)
     }
 }
