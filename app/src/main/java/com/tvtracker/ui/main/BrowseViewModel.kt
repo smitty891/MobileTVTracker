@@ -15,8 +15,6 @@ import kotlinx.coroutines.launch
 
 class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewModel() {
 
-    val PAGE_SIZE = 10
-
     var searchTxt = "movie"
     var searchType = "movie"
     var page by mutableStateOf(1)
@@ -81,6 +79,8 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
         scrollPosition = position
     }
 
+    fun getPageSize() = PAGE_SIZE
+
     private fun resetSearch() {
         mediaItems.value = listOf()
     }
@@ -89,5 +89,9 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
         val current = ArrayList(mediaItems.value)
         current.addAll(newMediaItems)
         mediaItems.postValue(current)
+    }
+
+    companion object{
+        const val PAGE_SIZE = 10
     }
 }

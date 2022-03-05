@@ -83,7 +83,7 @@ class MainActivity : ComponentActivity() {
                             LazyColumn(state = listState) {
                                 itemsIndexed(mediaItems) { index, item ->
                                     viewModel.onChangeScrollPosition(index)
-                                    if((index + 1) >= (viewModel.page * viewModel.PAGE_SIZE) && !viewModel.loading){
+                                    if((index + 1) >= (viewModel.page * viewModel.getPageSize()) && !viewModel.loading){
                                         viewModel.nextPage()
                                     }
                                     MediaItemRow(item)
