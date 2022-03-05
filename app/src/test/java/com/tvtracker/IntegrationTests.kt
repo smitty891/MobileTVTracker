@@ -3,43 +3,21 @@ package com.tvtracker
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tvtracker.dto.ImdbResponse
 import com.tvtracker.service.MediaService
+import com.tvtracker.ui.main.BrowseViewModel
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestRule
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.impl.annotations.MockK
 import junit.framework.Assert.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.newSingleThreadContext
+import org.junit.rules.TestRule
 
 class IntegrationTests {
 
     @get: Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
-    lateinit var bvm : BrowseViewModel //(add)
-
-    @MockK //(add)
-    lateinit var mockmediaService: mockMediaService //add
-
+    lateinit var mediaService: MediaService
     var imdbResponse: ImdbResponse? = null
-    private val mainThreadSurrogate = newSingleThreadContext("Main Thread") 
-
-    @Before //add
-    fun initMocksAndMainThread() {
-        MockKAnnotations.init(this)
-        Dispatchers.setMain(mainThreadSurrogate)
-    }
-
-    @After //add
-    fun tearDown() {
-        Dispatchers.resetMain()
-        mainThreadSurrogate.close()
-    }
-
 
     @Test
     fun `Given media data is available when I search BattleBots then I should receive media results` () = runTest {
@@ -48,11 +26,11 @@ class IntegrationTests {
         thenMediaResultsContainsBattleBots()
     }
     private fun givenMediaServiceIsInitialized() {
-        bvm = BrowseViewModel(mediaService = MediaService) //add
+        mediaService = MediaService()
     }
 
     private suspend fun whenUserSearchesBattleBots() {
-        imdbResponse = mediaService.searchIMDB("BattleBots", "series", 1)
+        imdbResponse = mediaService.searchImdb("BattleBots", "series", 1)
     }
 
     private fun thenMediaResultsContainsBattleBots() {
