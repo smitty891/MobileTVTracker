@@ -3,7 +3,7 @@
 
 TvTracker allows users to build a list of movies/series they want to watch. They can search for movies by titles and save it to a view list. 
 
-Uers choose in which streaming platformes such as Netflix, Hulu, IMDB, Amazon Prime Videos, Youtube, etc to wwatch movies/series.
+Uers choose in which streaming platformes such as Netflix, Hulu, IMDB, Amazon Prime Videos, Youtube, etc to watch movies/series.
 
 Additionally, TvTracker will enable users to:
 
