@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
@@ -49,8 +50,8 @@ import com.tvtracker.dto.User
 class MainActivity : ComponentActivity() {
 
     private val viewModel: BrowseViewModel by viewModel<BrowseViewModel>()
-
     private var firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+    private var showFavorites by mutableStateOf(false)
 
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
@@ -68,13 +69,14 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val mediaItems by viewModel.mediaItems.observeAsState(initial = emptyList())
+            val imdbMediaItems by viewModel.imdbMediaItems.observeAsState(initial = emptyList())
+            val userMediaItems by viewModel.userMediaItems.observeAsState(initial = emptyList())
+            val listState = rememberLazyListState()
             val loading = viewModel.loading
 
             TvTrackerTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    val listState = rememberLazyListState()
                     Scaffold(
                         topBar = {
                             Column {
@@ -95,14 +97,11 @@ class MainActivity : ComponentActivity() {
                         },
                         content = {
                             LoadingSpinner(isDisplayed = loading)
-                            LazyColumn(state = listState) {
-                                itemsIndexed(mediaItems) { index, item ->
-                                    viewModel.onChangeScrollPosition(index)
-                                    if ((index + 1) >= (viewModel.page * viewModel.PAGE_SIZE) && !viewModel.loading) {
-                                        viewModel.nextPage()
-                                    }
-                                    MediaItemRow(item)
-                                }
+
+                            if (showFavorites) {
+                                UserMediaItemColumn(userMediaItems)
+                            } else {
+                                ImdbMediaItemColumn(listState, imdbMediaItems)
                             }
                         }
                     )
@@ -134,14 +133,12 @@ class MainActivity : ComponentActivity() {
                 viewModel.listenToUserMediaItems()
             }
         } else {
-            Log.e("MainActivity.kt", "Error logging in " + response?.error?.errorCode)
+            Log.e("Error Signing In", "Error: ${response?.error?.errorCode}")
         }
     }
 
     @Composable
     fun TVTrackerMenu() {
-        var context = LocalContext.current
-
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = CenterHorizontally
@@ -153,24 +150,18 @@ class MainActivity : ComponentActivity() {
             Row {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Button(onClick = {
-
-                    },
-                        content = { Text(text = "Browse") })
+                        showFavorites = false
+                    }, content = { Text("Browse") })
                 }
                 Column(modifier = Modifier.padding(16.dp)) {
                     Button(onClick = {
                         if (firebaseUser == null) {
                             signIn()
+                        } else {
+                            showFavorites = true
                         }
-                    },
-                        content = { Text(text = "Favorites") })
+                    }, content = { Text("Favorites") })
                 }
-            }
-            Row {
-                SearchView(context)
-            }
-            Row {
-
             }
         }
     }
@@ -243,6 +234,28 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
+    fun UserMediaItemColumn(mediaItems: List<MediaItem>) {
+        LazyColumn() {
+            itemsIndexed(mediaItems) { index, item ->
+                MediaItemRow(item)
+            }
+        }
+    }
+
+    @Composable
+    fun ImdbMediaItemColumn(listState: LazyListState, mediaItems: List<MediaItem>) {
+        LazyColumn(state = listState) {
+            itemsIndexed(mediaItems) { index, item ->
+                viewModel.onChangeScrollPosition(index)
+                if ((index + 1) >= (viewModel.page * viewModel.PAGE_SIZE) && !viewModel.loading) {
+                    viewModel.nextPage()
+                }
+                MediaItemRow(item)
+            }
+        }
+    }
+
+    @Composable
     fun MediaItemRow(mediaItem: MediaItem) {
 
         if (mediaItem.imageUrl == "N/A") {
@@ -251,15 +264,17 @@ class MainActivity : ComponentActivity() {
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.height(210.dp).pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = {
-                        viewModel.selectedMediaItem = mediaItem
-                        viewModel.getMediaItemDetails()
-                        viewModel.saveMediaItem()
-                    }
-                )
-            }
+            modifier = Modifier
+                .height(210.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            viewModel.selectedMediaItem = mediaItem
+                            viewModel.getMediaItemDetails()
+                            //viewModel.saveMediaItem()
+                        }
+                    )
+                }
         ) {
             Image(
                 painter = rememberImagePainter(mediaItem.imageUrl),

@@ -34,7 +34,7 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     private var currentSearchTxt = ""
     private var currentSearchType = ""
 
-    var mediaItems: MutableLiveData<List<MediaItem>> = MutableLiveData<List<MediaItem>>()
+    var imdbMediaItems: MutableLiveData<List<MediaItem>> = MutableLiveData<List<MediaItem>>()
     var userMediaItems: MutableLiveData<List<MediaItem>> = MutableLiveData<List<MediaItem>>()
 
     init {
@@ -57,7 +57,7 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
 
             val imdbResponse = mediaService.searchImdb(searchTxt, searchType, page)
             imdbResponse?.let {
-                mediaItems.postValue(it.results)
+                imdbMediaItems.postValue(it.results)
             }
 
             loading = false
@@ -89,13 +89,13 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     }
 
     private fun resetMediaItems() {
-        mediaItems.value = listOf()
+        imdbMediaItems.value = listOf()
     }
 
     private fun appendMediaItems(newMediaItems: List<MediaItem>) {
-        val current = ArrayList(mediaItems.value)
+        val current = ArrayList(imdbMediaItems.value)
         current.addAll(newMediaItems)
-        mediaItems.postValue(current)
+        imdbMediaItems.postValue(current)
     }
 
     fun getMediaItemDetails() {
