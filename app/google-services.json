@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "698372182897",
+    "project_id": "tvtracker-3ecb5",
+    "storage_bucket": "tvtracker-3ecb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:698372182897:android:b428daa941c9640d475cd0",
+        "android_client_info": {
+          "package_name": "com.tvtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "698372182897-fc255bl17kqvi4mn241lo2d04delucqt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tvtracker",
+            "certificate_hash": "4d17eaf29f2ec498f796a68bf6c58f1d105f16dc"
+          }
+        },
+        {
+          "client_id": "698372182897-11e82c8ga6h5timd3ebu99mmchkhv34n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCC5n0ei-YmonNLper9aH3xvwam05TSCT8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "698372182897-11e82c8ga6h5timd3ebu99mmchkhv34n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
