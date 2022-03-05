@@ -2,11 +2,17 @@ package com.tvtracker.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class MediaItem(@SerializedName("imdbID")      var id: String = "",
+data class MediaItem(@SerializedName("id")          var id: String = "",
+                     @SerializedName("imdbID")      var imdbId: String = "",
+                     @SerializedName("imdbRating")  var imdbRating: String = "",
                      @SerializedName("Title")       var title: String = "",
                      @SerializedName("Year")        var year: String = "",
-                     @SerializedName("Type")        var type: String = "",
+                     @SerializedName("Released")    var releaseDate: String = "",
+                     @SerializedName("Rated")       var rated: String = "",
+                     @SerializedName("Genre")       var genre: String = "",
                      @SerializedName("Poster")      var imageUrl: String = "",
-                     @SerializedName("platform")    var platform: String = "",
-                     @SerializedName("description") var description: String = "",
-                     @SerializedName("watched")     var watched: Boolean = false)
+                     @SerializedName("Director")    var directors: String = "",
+                     @SerializedName("Writer")      var writers: String = "",
+                     @SerializedName("Actors")      var actors: String = "",
+                     @SerializedName("Plot")        var plot: String = "")
+
