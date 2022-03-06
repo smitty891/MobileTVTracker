@@ -9,7 +9,7 @@ class ImdbInterceptor: Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
             .newBuilder()
-            .addHeader("x-rapidapi-key", BuildConfig.xrapidapikey)
+//          .addHeader("x-rapidapi-key", xrapidapikey)
             .build()
         return chain.proceed(request)
     }

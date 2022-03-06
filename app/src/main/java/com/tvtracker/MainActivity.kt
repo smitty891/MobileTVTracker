@@ -3,7 +3,6 @@ package com.tvtracker
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import android.widget.SearchView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -26,7 +25,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -49,7 +47,7 @@ import com.tvtracker.dto.User
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: BrowseViewModel by viewModel<BrowseViewModel>()
+    private val viewModel: BrowseViewModel by viewModel()
     private var firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
     private var showFavorites by mutableStateOf(false)
 
@@ -235,7 +233,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun UserMediaItemColumn(mediaItems: List<MediaItem>) {
-        LazyColumn() {
+        LazyColumn {
             itemsIndexed(mediaItems) { index, item ->
                 MediaItemRow(item)
             }
