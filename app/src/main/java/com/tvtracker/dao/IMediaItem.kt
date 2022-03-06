@@ -6,7 +6,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface IMediaItemDAO {
+interface IMediaItem {
 
     @GET("/")
     fun searchImdb(@Query("s") searchTxt: String, @Query("type") type: String, @Query("page") page: Int): Call<ImdbResponse>
