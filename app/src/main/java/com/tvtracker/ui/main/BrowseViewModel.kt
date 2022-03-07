@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewModel() {
 
-    private lateinit var firestore: FirebaseFirestore
+    private var firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     var user: User? = null
     var selectedMediaItem by mutableStateOf(MediaItem())
 
@@ -38,7 +38,6 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     var userMediaItems: MutableLiveData<List<MediaItem>> = MutableLiveData<List<MediaItem>>()
 
     init {
-        firestore = FirebaseFirestore.getInstance()
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
 
         searchImdb(null)
@@ -132,23 +131,6 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
                     }
                     userMediaItems.postValue(mediaItems)
                 }
-            }
-        }
-    }
-
-    fun saveMediaItem() {
-        if(selectedMediaItem.imdbId.isNotEmpty()) {
-            user?.let { user ->
-                val document =
-                    if (selectedMediaItem.id.isEmpty()) {
-                        firestore.collection("users").document(user.uid).collection("mediaItems").document()
-                    } else {
-                        firestore.collection("users").document(user.uid).collection("mediaItems").document(selectedMediaItem.id)
-                    }
-                selectedMediaItem.id = document.id
-                val handle = document.set(selectedMediaItem)
-                handle.addOnSuccessListener { Log.d("Firebase", "Document Saved") }
-                handle.addOnFailureListener { Log.e("Firebase", "Error: $it") }
             }
         }
     }

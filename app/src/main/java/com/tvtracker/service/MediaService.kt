@@ -12,7 +12,10 @@ import retrofit2.awaitResponse
 
 class MediaService : IMediaService {
 
-    override suspend fun searchImdb(text: String, type: String, page: Int): ImdbResponse? {
+    override suspend fun searchImdb(text: String,
+                                    type: String,
+                                    page: Int
+    ): ImdbResponse? {
         return withContext(Dispatchers.IO) {
             val service = ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
             val mediaItems = async {service?.searchImdb(text, type, page)}
