@@ -14,5 +14,6 @@ data class MediaItem(@SerializedName("id")          var id: String = "",
                      @SerializedName("Director")    var directors: String = "",
                      @SerializedName("Writer")      var writers: String = "",
                      @SerializedName("Actors")      var actors: String = "",
-                     @SerializedName("Plot")        var plot: String = "")
+                     @SerializedName("Plot")        var plot: String = ""
+)
 
