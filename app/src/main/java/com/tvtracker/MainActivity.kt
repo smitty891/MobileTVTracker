@@ -3,7 +3,6 @@ package com.tvtracker
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import android.widget.SearchView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -26,7 +25,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -53,6 +52,8 @@ class MainActivity : ComponentActivity() {
     private var firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
     private var showFavorites by mutableStateOf(false)
 
+
+
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
     ) {
@@ -73,40 +74,17 @@ class MainActivity : ComponentActivity() {
             val userMediaItems by viewModel.userMediaItems.observeAsState(initial = emptyList())
             val listState = rememberLazyListState()
             val loading = viewModel.loading
+            var configuration = LocalConfiguration.current
 
-            TvTrackerTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Scaffold(
-                        topBar = {
-                            Column {
-                                Row {
-                                    TVTrackerMenu()
-                                }
-                                Row {
-                                    SearchBar(
-                                        onTextChanged = {
-                                            viewModel.searchTxt = it
-                                        },
-                                        onSearchClicked = {
-                                            viewModel.searchImdb(listState)
-                                        }
-                                    )
-                                }
-                            }
-                        },
-                        content = {
-                            LoadingSpinner(isDisplayed = loading)
-
-                            if (showFavorites) {
-                                UserMediaItemColumn(userMediaItems)
-                            } else {
-                                ImdbMediaItemColumn(listState, imdbMediaItems)
-                            }
-                        }
-                    )
+            when( configuration.orientation ) {
+                // is the app in portrait mode?
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    MainContentPortrait( imdbMediaItems, userMediaItems, listState, loading, viewModel )
+                } else -> {
+                    MainContentLandscape( imdbMediaItems, userMediaItems, listState, loading, viewModel )
                 }
             }
+
         }
     }
 
@@ -255,6 +233,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+
     @Composable
     fun MediaItemRow(mediaItem: MediaItem) {
 
@@ -313,4 +292,70 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    @ExperimentalComposeUiApi
+    @Composable
+    fun MainContentPortrait(
+        imdbMediaItems: List<MediaItem>,
+        userMediaItems: List<MediaItem>,
+        listState: LazyListState,
+        loading: Boolean,
+        viewModel: BrowseViewModel
+    ) {
+        TvTrackerTheme {
+            // A surface container using the 'background' color from the theme
+            Surface(color = MaterialTheme.colors.background) {
+                Scaffold(
+                    topBar = {
+                        Column {
+                            Row {
+                                TVTrackerMenu()
+                            }
+                            Row {
+                                SearchBar(
+                                    onTextChanged = {
+                                        viewModel.searchTxt = it
+                                    },
+                                    onSearchClicked = {
+                                        viewModel.searchImdb(listState)
+                                    }
+                                )
+                            }
+                        }
+                    },
+                    content = {
+                        LoadingSpinner(isDisplayed = loading)
+
+                        if (showFavorites) {
+                            UserMediaItemColumn(userMediaItems)
+                        } else {
+                            ImdbMediaItemColumn(listState, imdbMediaItems)
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun MainContentLandscape(
+        imdbMediaItems: List<MediaItem>,
+        userMediaItems: List<MediaItem>,
+        listState: LazyListState,
+        loading: Boolean,
+        viewModel: BrowseViewModel
+    ) {
+        // just base layout to show orientation change is working
+        Row(
+            Modifier.
+                padding( 20.dp ).
+                fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text( "The phone is in landscape mode" )
+        }
+    }
+
+
 }
