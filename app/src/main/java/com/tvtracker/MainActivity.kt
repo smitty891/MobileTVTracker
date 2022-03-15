@@ -115,6 +115,95 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @ExperimentalComposeUiApi
+    @Composable
+    fun MainContentPortrait(
+        imdbMediaItems: List<MediaItem>,
+        userMediaItems: List<MediaItem>,
+        listState: LazyListState,
+        loading: Boolean,
+        viewModel: BrowseViewModel
+    ) {
+        TvTrackerTheme {
+            // A surface container using the 'background' color from the theme
+            Surface(color = MaterialTheme.colors.background) {
+                Scaffold(
+                    topBar = {
+                        Column {
+                            Row {
+                                TVTrackerMenu()
+                            }
+                            Row {
+                                SearchBar(
+                                    onTextChanged = {
+                                        viewModel.searchTxt = it
+                                    },
+                                    onSearchClicked = {
+                                        viewModel.searchImdb(listState)
+                                    }
+                                )
+                            }
+                        }
+                    },
+                    content = {
+                        LoadingSpinner(isDisplayed = loading)
+
+                        if (showFavorites) {
+                            UserMediaItemColumn(userMediaItems)
+                        } else {
+                            ImdbMediaItemColumn(listState, imdbMediaItems)
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    @ExperimentalComposeUiApi
+    @Composable
+    fun MainContentLandscape(
+        imdbMediaItems: List<MediaItem>,
+        userMediaItems: List<MediaItem>,
+        listState: LazyListState,
+        loading: Boolean,
+        viewModel: BrowseViewModel
+    ) {
+        TvTrackerTheme {
+            // A surface container using the 'background' color from the theme
+            Surface(color = MaterialTheme.colors.background) {
+                Scaffold(
+                    topBar = {
+                        Column {
+                            Row {
+                                TVTrackerMenu()
+                            }
+                            Row {
+                                SearchBar(
+                                    onTextChanged = {
+                                        viewModel.searchTxt = it
+                                    },
+                                    onSearchClicked = {
+                                        viewModel.searchImdb(listState)
+                                    }
+                                )
+                            }
+                        }
+                    },
+                    content = {
+                        LoadingSpinner(isDisplayed = loading)
+
+                        if (showFavorites) {
+                            UserMediaItemColumn(userMediaItems)
+                        } else {
+                            ImdbMediaItemColumn(listState, imdbMediaItems)
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+
     @Composable
     fun TVTrackerMenu() {
         Column(
@@ -154,7 +243,7 @@ class MainActivity : ComponentActivity() {
             horizontalAlignment = CenterHorizontally
         ) {
             Row {
-                TVTrackerMenu()
+                //TVTrackerMenu()
             }
             Row {
                 SearchBar(
@@ -290,70 +379,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.onSecondary
                 )
             }
-        }
-    }
-
-    @ExperimentalComposeUiApi
-    @Composable
-    fun MainContentPortrait(
-        imdbMediaItems: List<MediaItem>,
-        userMediaItems: List<MediaItem>,
-        listState: LazyListState,
-        loading: Boolean,
-        viewModel: BrowseViewModel
-    ) {
-        TvTrackerTheme {
-            // A surface container using the 'background' color from the theme
-            Surface(color = MaterialTheme.colors.background) {
-                Scaffold(
-                    topBar = {
-                        Column {
-                            Row {
-                                TVTrackerMenu()
-                            }
-                            Row {
-                                SearchBar(
-                                    onTextChanged = {
-                                        viewModel.searchTxt = it
-                                    },
-                                    onSearchClicked = {
-                                        viewModel.searchImdb(listState)
-                                    }
-                                )
-                            }
-                        }
-                    },
-                    content = {
-                        LoadingSpinner(isDisplayed = loading)
-
-                        if (showFavorites) {
-                            UserMediaItemColumn(userMediaItems)
-                        } else {
-                            ImdbMediaItemColumn(listState, imdbMediaItems)
-                        }
-                    }
-                )
-            }
-        }
-    }
-
-    @Composable
-    fun MainContentLandscape(
-        imdbMediaItems: List<MediaItem>,
-        userMediaItems: List<MediaItem>,
-        listState: LazyListState,
-        loading: Boolean,
-        viewModel: BrowseViewModel
-    ) {
-        // just base layout to show orientation change is working
-        Row(
-            Modifier.
-                padding( 20.dp ).
-                fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text( "The phone is in landscape mode" )
         }
     }
 
