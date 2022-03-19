@@ -6,23 +6,30 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -30,10 +37,13 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.rememberImagePainter
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
@@ -162,6 +172,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     fun MoviePopup (
 
@@ -169,12 +180,44 @@ class MainActivity : ComponentActivity() {
         Dialog(
             onDismissRequest = {
                 openDialog = false
-            }
+            }, properties = DialogProperties(usePlatformDefaultWidth = false)
         ){
-            Card() {
-                Column() {
-                    //Title
-                    Text(text = "The Lord of the Rings: The Fellowship of the Ring")
+            Card(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+                backgroundColor = Color.White,
+                contentColor = Color.Black,
+                elevation = 8.dp,
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            //Close Button
+                            Button( onClick = { openDialog = false}, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+                                Icon(
+                                    Icons.Outlined.Close,
+                                    contentDescription = "Close",
+                                    modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
+                                    tint = Color.Black
+                                )
+                            }
+
+                            //Favorites Button
+                            Button(onClick = { /*TODO - Favorite this Movie*/ }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+                                Icon(
+                                    Icons.Outlined.Star,
+                                    contentDescription = "Favorite",
+                                    modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
+                                    tint = Color.Black
+                                )
+                            }
+
+                    }
+                    Column(modifier = Modifier.padding(8.dp).fillMaxWidth().wrapContentSize(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                        //Title
+                        Text(text = "The Lord of the Rings: The Fellowship of the Ring", fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                    }
+
                 }
             }
         }
