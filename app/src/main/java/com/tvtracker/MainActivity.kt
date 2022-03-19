@@ -33,6 +33,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import coil.compose.rememberImagePainter
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
@@ -48,11 +49,10 @@ import com.tvtracker.dto.User
 
 class MainActivity : ComponentActivity() {
 
+    private var openDialog by mutableStateOf(false)
     private val viewModel: BrowseViewModel by viewModel<BrowseViewModel>()
     private var firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
     private var showFavorites by mutableStateOf(false)
-
-
 
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
@@ -127,6 +127,9 @@ class MainActivity : ComponentActivity() {
         TvTrackerTheme {
             // A surface container using the 'background' color from the theme
             Surface(color = MaterialTheme.colors.background) {
+                if (openDialog){
+                    MoviePopup()
+                }
                 Scaffold(
                     topBar = {
                         Column {
@@ -155,6 +158,24 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 )
+            }
+        }
+    }
+
+    @Composable
+    fun MoviePopup (
+
+    ){
+        Dialog(
+            onDismissRequest = {
+                openDialog = false
+            }
+        ){
+            Card() {
+                Column() {
+                    //Title
+                    Text(text = "The Lord of the Rings: The Fellowship of the Ring")
+                }
             }
         }
     }
@@ -339,6 +360,7 @@ class MainActivity : ComponentActivity() {
                         onTap = {
                             viewModel.selectedMediaItem = mediaItem
                             viewModel.getMediaItemDetails()
+                            openDialog = true
                             //viewModel.saveMediaItem()
                         }
                     )
@@ -365,6 +387,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+
 
     @Composable
     fun LoadingSpinner(isDisplayed: Boolean) {
