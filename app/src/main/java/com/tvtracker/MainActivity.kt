@@ -34,6 +34,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -213,11 +214,47 @@ class MainActivity : ComponentActivity() {
                             }
 
                     }
-                    Column(modifier = Modifier.padding(8.dp).fillMaxWidth().wrapContentSize(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth()
+                        .wrapContentSize(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
                         //Title
                         Text(text = "The Lord of the Rings: The Fellowship of the Ring", fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                     }
-
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Column() {
+                            Image(painter = rememberImagePainter("https://via.placeholder.com/140x200"),
+                                contentDescription = ("The Lord of the Rings: The Fellowship of the Ring" + " Poster"),
+                                modifier = Modifier
+                                    .size(140.dp, 200.dp)
+                                    .padding(5.dp))
+                        }
+                        Column(modifier = Modifier.padding(8.dp)) {
+                            Text(text = "Released: " + "10 Dec 2001")
+                            Text(text = "Rating : " + "PG-13")
+                            Text(text = "Runtime: " + "178 Minutes")
+                            Text(text = "Genre: " + "Fantasy")
+                            Text(text = "Country: " + "New Zealand")
+                        }
+                    }
+                    Column(modifier = Modifier.fillMaxWidth().padding(5.dp)){
+                        Text(text = "Plot", fontSize = 24.sp)
+                        Text(text = "A meek hobbit from the shire and his eight companions set out to destroy the powerful one ring.")
+                    }
+                    Column(modifier = Modifier.fillMaxWidth().padding(5.dp)){
+                        Text(text = "Cast & Crew", fontSize = 24.sp)
+                        Text(text = "Directed By: " + "Peter Jackson")
+                        Text(text = "Written By: " + "J.R.R. Tolkien")
+                        Text(text = "Cast: " + "Elijah Wood" + ", " + "Viggo Mortinson")
+                    }
+                    Column(modifier = Modifier.fillMaxWidth().padding(5.dp)){
+                        Text(text = "Reception", fontSize = 24.sp)
+                        Text(text = "10/10")
+                    }
+                    Column(modifier = Modifier.fillMaxWidth().padding(5.dp)){
+                        Text(text = "Languages", fontSize = 24.sp)
+                        Text(text = "English, Chinese, German")
+                    }
                 }
             }
         }
