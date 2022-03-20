@@ -35,10 +35,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -56,6 +60,8 @@ import com.tvtracker.ui.theme.TvTrackerTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.tvtracker.dto.User
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
 
 
 class MainActivity : ComponentActivity() {
@@ -139,7 +145,7 @@ class MainActivity : ComponentActivity() {
             // A surface container using the 'background' color from the theme
             Surface(color = MaterialTheme.colors.background) {
                 if (openDialog){
-                    MoviePopup()
+                    MoviePopup(viewModel.selectedMediaItem)
                 }
                 Scaffold(
                     topBar = {
@@ -175,9 +181,11 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
-    fun MoviePopup (
+    fun MoviePopup (mediaItem: MediaItem){
+        if (mediaItem.imageUrl == "N/A") {
+            mediaItem.imageUrl = "https://i.imgur.com/N6EvlmG.png"
+        }
 
-    ){
         Dialog(
             onDismissRequest = {
                 openDialog = false
@@ -186,76 +194,110 @@ class MainActivity : ComponentActivity() {
             Card(modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-                backgroundColor = Color.White,
-                contentColor = Color.Black,
-                elevation = 8.dp,
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            //Close Button
-                            Button( onClick = { openDialog = false}, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
-                                Icon(
-                                    Icons.Outlined.Close,
-                                    contentDescription = "Close",
-                                    modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
-                                    tint = Color.Black
-                                )
-                            }
 
-                            //Favorites Button
-                            Button(onClick = { /*TODO - Favorite this Movie*/ }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
-                                Icon(
-                                    Icons.Outlined.Star,
-                                    contentDescription = "Favorite",
-                                    modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
-                                    tint = Color.Black
-                                )
-                            }
+                backgroundColor = Color(0xFF0D47A1),
+                contentColor = Color(0xFFFFFDE7),
+                elevation = 8.dp,
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column() {
+
+
+                Column() {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFE0E0E0)), horizontalArrangement = Arrangement.SpaceBetween) {
+                        //Close Button
+                        Button( onClick = { openDialog = false}, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+                            Icon(
+                                Icons.Outlined.Close,
+                                contentDescription = "Close",
+                                modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
+                                tint = Color.Black
+                            )
+                        }
+
+                        //Favorites Button
+                        Button(onClick = { /*TODO - Favorite this Movie*/ }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+                            Icon(
+                                Icons.Outlined.Star,
+                                contentDescription = "Favorite",
+                                modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
+                                tint = Color.Black
+                            )
+                        }
 
                     }
+                }
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)) {
                     Column(modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth()
                         .wrapContentSize(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
                         //Title
-                        Text(text = "The Lord of the Rings: The Fellowship of the Ring", fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                        Text(text = mediaItem.title, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                     }
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Column() {
-                            Image(painter = rememberImagePainter("https://via.placeholder.com/140x200"),
-                                contentDescription = ("The Lord of the Rings: The Fellowship of the Ring" + " Poster"),
+                            Image(painter = rememberImagePainter(mediaItem.imageUrl),
+                                contentDescription = (mediaItem.title + " Poster"),
                                 modifier = Modifier
                                     .size(140.dp, 200.dp)
                                     .padding(5.dp))
                         }
                         Column(modifier = Modifier.padding(8.dp)) {
-                            Text(text = "Released: " + "10 Dec 2001")
-                            Text(text = "Rating : " + "PG-13")
-                            Text(text = "Runtime: " + "178 Minutes")
-                            Text(text = "Genre: " + "Fantasy")
-                            Text(text = "Country: " + "New Zealand")
+                            Text(
+                                buildAnnotatedString {
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Released: ")}
+                                    append(mediaItem.releaseDate)
+                                })
+                            Text(
+                                buildAnnotatedString {
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Rating: ")}
+                                    append(mediaItem.rated)
+                                })
+                            Text(
+                                buildAnnotatedString {
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Genre: ")}
+                                    append(mediaItem.genre)
+                                })
+                            Text(
+                                buildAnnotatedString {
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Reception: ")}
+                                    withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)){append((mediaItem.imdbRating + "/10"))}
+                                })
                         }
                     }
-                    Column(modifier = Modifier.fillMaxWidth().padding(5.dp)){
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)){
                         Text(text = "Plot", fontSize = 24.sp)
-                        Text(text = "A meek hobbit from the shire and his eight companions set out to destroy the powerful one ring.")
+                        Text(text = mediaItem.plot)
                     }
-                    Column(modifier = Modifier.fillMaxWidth().padding(5.dp)){
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)){
                         Text(text = "Cast & Crew", fontSize = 24.sp)
-                        Text(text = "Directed By: " + "Peter Jackson")
-                        Text(text = "Written By: " + "J.R.R. Tolkien")
-                        Text(text = "Cast: " + "Elijah Wood" + ", " + "Viggo Mortinson")
-                    }
-                    Column(modifier = Modifier.fillMaxWidth().padding(5.dp)){
-                        Text(text = "Reception", fontSize = 24.sp)
-                        Text(text = "10/10")
-                    }
-                    Column(modifier = Modifier.fillMaxWidth().padding(5.dp)){
-                        Text(text = "Languages", fontSize = 24.sp)
-                        Text(text = "English, Chinese, German")
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Directed By: ")}
+                                append(mediaItem.directors)
+                            })
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Written By: ")}
+                                append(mediaItem.writers)
+                            })
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Cast: ")}
+                                append(mediaItem.actors)
+                            })
                     }
                 }
+            }
             }
         }
     }
@@ -313,7 +355,7 @@ class MainActivity : ComponentActivity() {
         ) {
 
             Row {
-                Text(text = "TV Tracker", fontSize = 35.sp, fontWeight = FontWeight.Bold)
+                Text(text = "TV Tracker", fontSize = 35.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 40.dp))
             }
             Row {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -376,6 +418,8 @@ class MainActivity : ComponentActivity() {
                 onTextChanged(it.text)
             },
             singleLine = true,
+
+            label = {Text(text= "Search for a Movie or TV Show", color= Color.White)},
             trailingIcon = {
                 IconButton(
                     onClick = {
@@ -462,7 +506,7 @@ class MainActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = CenterHorizontally
             ) {
-                Text(mediaItem.title)
+                Text(mediaItem.title, textAlign = TextAlign.Center)
                 Text(mediaItem.year)
             }
         }
