@@ -218,7 +218,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         //Favorites Button
-                        Button(onClick = { /*TODO - Favorite this Movie*/ }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+                        Button(onClick = { viewModel.saveMediaItem() }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
                             Icon(
                                 Icons.Outlined.Star,
                                 contentDescription = "Favorite",
@@ -485,7 +485,6 @@ class MainActivity : ComponentActivity() {
                             viewModel.selectedMediaItem = mediaItem
                             viewModel.getMediaItemDetails()
                             openDialog = true
-                            //viewModel.saveMediaItem()
                         }
                     )
                 }
@@ -529,6 +528,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
 }
