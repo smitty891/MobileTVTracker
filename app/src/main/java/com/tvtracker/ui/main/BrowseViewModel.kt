@@ -153,6 +153,17 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
         }
     }
 
+    fun deleteMediaItem() {
+        if(selectedMediaItem.id.isNotEmpty()) {
+            user?.let { user ->
+                val document = firestore.collection("users").document(user.uid).collection("mediaItems").document(selectedMediaItem.id)
+                val handle = document.delete()
+                handle.addOnSuccessListener { Log.d("Firebase", "Document Deleted") }
+                handle.addOnFailureListener { Log.e("Firebase", "Error: $it") }
+            }
+        }
+    }
+
     fun saveUser() {
         user?.let {
             firestore.collection("users").document(it.uid).set(it)
