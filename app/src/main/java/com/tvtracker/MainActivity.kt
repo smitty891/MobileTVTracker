@@ -234,10 +234,10 @@ class MainActivity : ComponentActivity() {
                     Button(onClick = {
                         val share = Intent.createChooser(Intent().apply {
                             action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, "https://developer.android.com/training/sharing/")
+                            putExtra(Intent.EXTRA_TEXT, "Check this out")
 
                             // (Optional) Here we're setting the title of the content
-                            putExtra(Intent.EXTRA_TITLE, "Introducing content previews")
+                            putExtra(Intent.EXTRA_TITLE, "See a preview")
 
                             // (Optional) Here we're passing a content URI to an image to be displayed
                             // data = contentUri
