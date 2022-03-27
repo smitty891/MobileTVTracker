@@ -1,5 +1,6 @@
 package com.tvtracker
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -53,11 +54,10 @@ class MainActivity : ComponentActivity() {
     private var showFavorites by mutableStateOf(false)
 
 
-
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
-    ) {
-            res -> this.signInResult(res)
+    ) { res ->
+        this.signInResult(res)
     }
 
     @ExperimentalComposeUiApi
@@ -86,6 +86,7 @@ class MainActivity : ComponentActivity() {
             }
 
         }
+
     }
 
     private fun signIn() {
@@ -228,6 +229,22 @@ class MainActivity : ComponentActivity() {
                             showFavorites = true
                         }
                     }, content = { Text("Favorites") })
+                }
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Button(onClick = {
+                        val share = Intent.createChooser(Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, "https://developer.android.com/training/sharing/")
+
+                            // (Optional) Here we're setting the title of the content
+                            putExtra(Intent.EXTRA_TITLE, "Introducing content previews")
+
+                            // (Optional) Here we're passing a content URI to an image to be displayed
+                            // data = contentUri
+                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        }, null)
+                        startActivity(share)
+                    }, content = { Text( "Share") })
                 }
             }
         }
