@@ -350,7 +350,7 @@ class MainActivity : ComponentActivity() {
 
 
     @Composable
-    fun TVTrackerMenu() {
+    internal fun TVTrackerMenu() {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = CenterHorizontally
@@ -398,7 +398,7 @@ class MainActivity : ComponentActivity() {
     @Preview(name = "Light Mode", showBackground = true)
     @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Dark Mode")
     @Composable
-    fun TopBarPreview() {
+    internal fun TopBarPreview() {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = CenterHorizontally
@@ -421,7 +421,7 @@ class MainActivity : ComponentActivity() {
 
     @ExperimentalComposeUiApi
     @Composable
-    fun SearchBar(
+    internal fun SearchBar(
         onTextChanged: (String) -> Unit,
         onSearchClicked: () -> Unit
     ) {
@@ -464,7 +464,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun UserMediaItemColumn(mediaItems: List<MediaItem>) {
+    internal fun UserMediaItemColumn(mediaItems: List<MediaItem>) {
         LazyColumn() {
             itemsIndexed(mediaItems) { index, item ->
                 MediaItemRow(item)
@@ -473,7 +473,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun ImdbMediaItemColumn(listState: LazyListState, mediaItems: List<MediaItem>) {
+    internal fun ImdbMediaItemColumn(listState: LazyListState, mediaItems: List<MediaItem>) {
         LazyColumn(state = listState) {
             itemsIndexed(mediaItems) { index, item ->
                 viewModel.onChangeScrollPosition(index)
@@ -487,7 +487,7 @@ class MainActivity : ComponentActivity() {
 
 
     @Composable
-    fun MediaItemRow(mediaItem: MediaItem) {
+    internal fun MediaItemRow(mediaItem: MediaItem) {
 
         if (mediaItem.imageUrl == "N/A") {
             mediaItem.imageUrl = "https://i.imgur.com/N6EvlmG.png"
@@ -532,7 +532,7 @@ class MainActivity : ComponentActivity() {
 
 
     @Composable
-    fun LoadingSpinner(isDisplayed: Boolean) {
+    internal fun LoadingSpinner(isDisplayed: Boolean) {
         if (isDisplayed) {
             Row(
                 modifier = Modifier
