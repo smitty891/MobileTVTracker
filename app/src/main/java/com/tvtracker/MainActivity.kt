@@ -7,33 +7,49 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.rememberImagePainter
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
@@ -45,14 +61,16 @@ import com.tvtracker.ui.theme.TvTrackerTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.tvtracker.dto.User
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
 
 
 class MainActivity : ComponentActivity() {
 
+    private var openDialog by mutableStateOf(false)
     private val viewModel: BrowseViewModel by viewModel<BrowseViewModel>()
     private var firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
     private var showFavorites by mutableStateOf(false)
-
 
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
@@ -128,6 +146,9 @@ class MainActivity : ComponentActivity() {
         TvTrackerTheme {
             // A surface container using the 'background' color from the theme
             Surface(color = MaterialTheme.colors.background) {
+                if (openDialog){
+                    MoviePopup(viewModel.selectedMediaItem)
+                }
                 Scaffold(
                     topBar = {
                         Column {
@@ -156,6 +177,129 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalComposeUiApi::class)
+    @Composable
+    fun MoviePopup (mediaItem: MediaItem){
+        if (mediaItem.imageUrl == "N/A") {
+            mediaItem.imageUrl = "https://i.imgur.com/N6EvlmG.png"
+        }
+
+        Dialog(
+            onDismissRequest = {
+                openDialog = false
+            }, properties = DialogProperties(usePlatformDefaultWidth = false)
+        ){
+            Card(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+
+                backgroundColor = Color(0xFF0D47A1),
+                contentColor = Color(0xFFFFFDE7),
+                elevation = 8.dp,
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column() {
+
+
+                Column() {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFE0E0E0)), horizontalArrangement = Arrangement.SpaceBetween) {
+                        //Close Button
+                        Button( onClick = { openDialog = false}, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+                            Icon(
+                                Icons.Outlined.Close,
+                                contentDescription = "Close",
+                                modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
+                                tint = Color.Black
+                            )
+                        }
+
+                        //Favorites Button
+                        Button(onClick = { viewModel.saveMediaItem() }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+                            Icon(
+                                Icons.Outlined.Star,
+                                contentDescription = "Favorite",
+                                modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
+                                tint = Color.Black
+                            )
+                        }
+
+                    }
+                }
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)) {
+                    Column(modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth()
+                        .wrapContentSize(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                        //Title
+                        Text(text = mediaItem.title, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                    }
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Column() {
+                            Image(painter = rememberImagePainter(mediaItem.imageUrl),
+                                contentDescription = (mediaItem.title + " Poster"),
+                                modifier = Modifier
+                                    .size(140.dp, 200.dp)
+                                    .padding(5.dp))
+                        }
+                        Column(modifier = Modifier.padding(8.dp)) {
+                            Text(
+                                buildAnnotatedString {
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Released: ")}
+                                    append(mediaItem.releaseDate)
+                                })
+                            Text(
+                                buildAnnotatedString {
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Rating: ")}
+                                    append(mediaItem.rated)
+                                })
+                            Text(
+                                buildAnnotatedString {
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Genre: ")}
+                                    append(mediaItem.genre)
+                                })
+                            Text(
+                                buildAnnotatedString {
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Reception: ")}
+                                    withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)){append((mediaItem.imdbRating + "/10"))}
+                                })
+                        }
+                    }
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)){
+                        Text(text = "Plot", fontSize = 24.sp)
+                        Text(text = mediaItem.plot)
+                    }
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)){
+                        Text(text = "Cast & Crew", fontSize = 24.sp)
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Directed By: ")}
+                                append(mediaItem.directors)
+                            })
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Written By: ")}
+                                append(mediaItem.writers)
+                            })
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){append("Cast: ")}
+                                append(mediaItem.actors)
+                            })
+                    }
+                }
+            }
             }
         }
     }
@@ -213,7 +357,7 @@ class MainActivity : ComponentActivity() {
         ) {
 
             Row {
-                Text(text = "TV Tracker", fontSize = 35.sp, fontWeight = FontWeight.Bold)
+                Text(text = "TV Tracker", fontSize = 35.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 40.dp))
             }
             Row {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -292,6 +436,8 @@ class MainActivity : ComponentActivity() {
                 onTextChanged(it.text)
             },
             singleLine = true,
+
+            label = {Text(text= "Search for a Movie or TV Show", color= Color.White)},
             trailingIcon = {
                 IconButton(
                     onClick = {
@@ -356,7 +502,7 @@ class MainActivity : ComponentActivity() {
                         onTap = {
                             viewModel.selectedMediaItem = mediaItem
                             viewModel.getMediaItemDetails()
-                            //viewModel.saveMediaItem()
+                            openDialog = true
                         }
                     )
                 }
@@ -377,11 +523,13 @@ class MainActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = CenterHorizontally
             ) {
-                Text(mediaItem.title)
+                Text(mediaItem.title, textAlign = TextAlign.Center)
                 Text(mediaItem.year)
             }
         }
     }
+
+
 
     @Composable
     fun LoadingSpinner(isDisplayed: Boolean) {
@@ -398,6 +546,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
 }
