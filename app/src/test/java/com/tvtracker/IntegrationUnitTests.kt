@@ -21,5 +21,32 @@ import java.util.concurrent.TimeUnit
 
 
 class IntegrationUnitTests {
-    
-}
+
+    @get:Rule
+    var rule: TestRule = InstantTaskExecutorRule()
+
+    lateinit var bvm : BrowseViewModel
+
+    @MockK
+    lateinit var mockMediaService : MediaService
+
+    private val mainThreadSurrogate = newSingleThreadContext("Main Thread")
+
+    @Before
+    fun initMocksAndMainThread() {
+        MockKAnnotations.init(this)
+        Dispatchers.setMain(mainThreadSurrogate)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+        mainThreadSurrogate.close()
+    }
+
+    @Test
+    fun `given a view model with live data when populated with media then results show the name BattleBots` () {
+        givenViewModelIsInitializedWithMockData()
+        whenMediaServiceFetchMoviesInvoked()
+        thenMediaResultsContainsBattleBots()
+   
