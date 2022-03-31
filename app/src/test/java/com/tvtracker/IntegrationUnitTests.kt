@@ -55,4 +55,10 @@ class IntegrationUnitTests {
 
     }
 
+    private fun  whenMediaServiceFetchMoviesInvoked() {
+
+    }
+
+    private fun  thenMediaResultsContainsBattleBots() {
+    }
 }
