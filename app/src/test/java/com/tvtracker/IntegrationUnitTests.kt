@@ -49,4 +49,10 @@ class IntegrationUnitTests {
         givenViewModelIsInitializedWithMockData()
         whenMediaServiceFetchMoviesInvoked()
         thenMediaResultsContainsBattleBots()
-   
+    }
+
+    private fun givenViewModelIsInitializedWithMockData() {
+
+    }
+
+}
