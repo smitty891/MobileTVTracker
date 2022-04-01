@@ -188,6 +188,22 @@ class MainActivity : ComponentActivity() {
             mediaItem.imageUrl = "https://i.imgur.com/N6EvlmG.png"
         }
 
+        val favIconClickHandler = {
+            if (mediaItem.id.isEmpty()) {
+                viewModel.saveMediaItem()
+            } else {
+                viewModel.deleteMediaItem()
+                openDialog = false;
+            }
+        }
+
+        val favIconColor =
+            if(mediaItem.id.isEmpty()){
+                 Color.Black
+            } else {
+                Color.Yellow
+            }
+
         Dialog(
             onDismissRequest = {
                 openDialog = false
@@ -220,12 +236,12 @@ class MainActivity : ComponentActivity() {
                         }
 
                         //Favorites Button
-                        Button(onClick = { viewModel.saveMediaItem() }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+                        Button(onClick = favIconClickHandler, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
                             Icon(
                                 Icons.Outlined.Star,
                                 contentDescription = "Favorite",
                                 modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
-                                tint = Color.Black
+                                tint = favIconColor
                             )
                         }
 
@@ -357,7 +373,7 @@ class MainActivity : ComponentActivity() {
         ) {
 
             Row {
-                Text(text = "TV Tracker", fontSize = 35.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 40.dp))
+                Text(text = "TV Tracker", fontSize = 35.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 20.dp))
             }
             Row {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -501,7 +517,9 @@ class MainActivity : ComponentActivity() {
                     detectTapGestures(
                         onTap = {
                             viewModel.selectedMediaItem = mediaItem
-                            viewModel.getMediaItemDetails()
+                            if(mediaItem.id.isEmpty()){
+                                viewModel.getMediaItemDetails()
+                            }
                             openDialog = true
                         }
                     )
