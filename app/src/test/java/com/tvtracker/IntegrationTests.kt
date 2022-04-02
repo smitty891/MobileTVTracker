@@ -3,12 +3,10 @@ package com.tvtracker
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tvtracker.dto.ImdbResponse
 import com.tvtracker.service.MediaService
-import com.tvtracker.ui.main.BrowseViewModel
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
-import junit.framework.Assert.*
 import org.junit.rules.TestRule
 
 class IntegrationTests {
@@ -38,8 +36,8 @@ class IntegrationTests {
         Assert.assertNotNull(imdbResponse!!.results)
 
         var foundBattleBots = false
-        imdbResponse!!.results!!.forEach {
-            if(it.title.uppercase().equals("BATTLEBOTS")){
+        imdbResponse!!.results.forEach {
+            if(it.title.uppercase()==("BATTLEBOTS")){
                 foundBattleBots = true
             }
         }

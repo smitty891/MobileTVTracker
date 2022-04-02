@@ -63,12 +63,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.tvtracker.dto.User
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
+import androidx.compose.ui.res.stringResource
 
 
 class MainActivity : ComponentActivity() {
 
     private var openDialog by mutableStateOf(false)
-    private val viewModel: BrowseViewModel by viewModel<BrowseViewModel>()
+    private val viewModel: BrowseViewModel by viewModel()
     private var firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
     private var showFavorites by mutableStateOf(false)
 
@@ -183,7 +184,7 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
-    fun MoviePopup (mediaItem: MediaItem){
+    fun MoviePopup(mediaItem: MediaItem) {
         if (mediaItem.imageUrl == "N/A") {
             mediaItem.imageUrl = "https://i.imgur.com/N6EvlmG.png"
         }
@@ -208,22 +209,29 @@ class MainActivity : ComponentActivity() {
                 Column() {
                     Row(modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFE0E0E0)), horizontalArrangement = Arrangement.SpaceBetween) {
+                        .background(Color(0xFFE0E0E0)),
+                        horizontalArrangement = Arrangement.SpaceBetween) {
                         //Close Button
-                        Button( onClick = { openDialog = false}, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+                        Button( onClick = { openDialog = false},
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                            elevation = ButtonDefaults.elevation(0.dp, 0.dp),
+                            
+                            ) {
                             Icon(
                                 Icons.Outlined.Close,
-                                contentDescription = "Close",
+                                contentDescription = stringResource(R.string.Close),
                                 modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
                                 tint = Color.Black
                             )
                         }
 
                         //Favorites Button
-                        Button(onClick = { viewModel.saveMediaItem() }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+                        Button(onClick = { viewModel.saveMediaItem() },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                            elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
                             Icon(
                                 Icons.Outlined.Star,
-                                contentDescription = "Favorite",
+                                contentDescription = stringResource(R.string.Favorite),
                                 modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
                                 tint = Color.Black
                             )
@@ -237,9 +245,12 @@ class MainActivity : ComponentActivity() {
                     Column(modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth()
-                        .wrapContentSize(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                        .wrapContentSize(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally) {
                         //Title
-                        Text(text = mediaItem.title, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                        Text(text = mediaItem.title, fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center)
                     }
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Column() {
@@ -357,7 +368,9 @@ class MainActivity : ComponentActivity() {
         ) {
 
             Row {
-                Text(text = "TV Tracker", fontSize = 35.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 40.dp))
+                Text(text = "TV Tracker", fontSize = 35.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 40.dp))
             }
             Row {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -372,7 +385,8 @@ class MainActivity : ComponentActivity() {
                         } else {
                             showFavorites = true
                         }
-                    }, content = { Text("Favorites") })
+
+                    }, content = { Text("Favorites") }, )
                 }
                 Column(modifier = Modifier.padding(16.dp)) {
                     Button(onClick = {
@@ -437,7 +451,7 @@ class MainActivity : ComponentActivity() {
             },
             singleLine = true,
 
-            label = {Text(text= "Search for a Movie or TV Show", color= Color.White)},
+            label = {Text(text= stringResource(R.string.InsertedSearchMovieText), color= Color.White)},
             trailingIcon = {
                 IconButton(
                     onClick = {

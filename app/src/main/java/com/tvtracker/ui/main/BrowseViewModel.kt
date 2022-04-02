@@ -21,16 +21,13 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     private lateinit var firestore: FirebaseFirestore
     var user: User? = null
     var selectedMediaItem by mutableStateOf(MediaItem())
-
     val PAGE_SIZE = 10
-
     var searchTxt = "movie"
     var searchType = "movie"
     var page by mutableStateOf(1)
     var loading by mutableStateOf(false)
 
     private var scrollPosition = 0
-
     private var currentSearchTxt = ""
     private var currentSearchType = ""
 
@@ -52,16 +49,13 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
             currentSearchTxt = searchTxt
             currentSearchType = searchType
             page = 1
-
             loading = true
 
             val imdbResponse = mediaService.searchImdb(searchTxt, searchType, page)
             imdbResponse?.let {
                 imdbMediaItems.postValue(it.results)
             }
-
             loading = false
-
             listState?.scrollToItem(0)
         }
     }
@@ -72,7 +66,6 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
             if((scrollPosition + 1) >= (page * PAGE_SIZE) ){
                 loading = true
                 page += 1
-
                 if(page > 1){
                     val imdbResponse = mediaService.searchImdb(currentSearchTxt, currentSearchType, page)
                     imdbResponse?.let {
@@ -115,12 +108,10 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
         user?.let {
             firestore.collection("users").document(it.uid).collection("mediaItems").addSnapshotListener {
                 snapshot, e ->
-
                 if (e != null) {
                     Log.w("Listen failed", e)
                     return@addSnapshotListener
                 }
-
                 snapshot?.let {
                     val mediaItems = ArrayList<MediaItem>()
                     val documents = snapshot.documents
@@ -148,7 +139,7 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
                 selectedMediaItem.id = document.id
                 val handle = document.set(selectedMediaItem)
                 handle.addOnSuccessListener { Log.d("Firebase", "Document Saved") }
-                handle.addOnFailureListener { Log.e("Firebase", "Error: $it") }
+                handle.addOnFailureListener { Log.e("Firebase", "Error: $user") }
             }
         }
     }
