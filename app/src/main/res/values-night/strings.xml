@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Tv Tracker</string>
     <string name="Close">Close</string>
     <string name="Favorite">Favorite</string>
     <string name="InsertedSearchMovieText">Search for a Movie or TV Show</string>
