@@ -93,7 +93,7 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     }
 
     private fun appendMediaItems(newMediaItems: List<MediaItem>) {
-        val current = ArrayList(imdbMediaItems.value)
+        var current = imdbMediaItems.value as ArrayList<MediaItem>
         current.addAll(newMediaItems)
         imdbMediaItems.postValue(current)
     }
