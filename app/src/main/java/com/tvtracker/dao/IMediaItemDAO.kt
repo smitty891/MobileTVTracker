@@ -14,4 +14,7 @@ interface IMediaItemDAO {
     @GET("/")
     fun searchByImdbId(@Query("i") imdbId: String): Call<MediaItem>
 
+    @GET("/")
+    fun addFavoriteMovie(userId: Int, movieId: Int)
+
 }
