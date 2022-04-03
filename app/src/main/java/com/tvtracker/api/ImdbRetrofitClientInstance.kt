@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object ImdbRetrofitClientInstance {
 
     private var retrofit: Retrofit? = null
-    private val BASE_URL = "https://movie-database-alternative.p.rapidapi.com"
+    private const val BASE_URL = "https://movie-database-alternative.p.rapidapi.com"
 
     private val client = OkHttpClient.Builder().apply {
         addInterceptor(ImdbInterceptor())

@@ -16,8 +16,7 @@ class MediaService : IMediaService {
         return withContext(Dispatchers.IO) {
             val service = ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
             val mediaItems = async {service?.searchImdb(text, type, page)}
-            val result = mediaItems.await()?.awaitResponse()?.body()
-            return@withContext result
+            return@withContext mediaItems.await()?.awaitResponse()?.body()
         }
     }
 
@@ -25,8 +24,7 @@ class MediaService : IMediaService {
         return withContext(Dispatchers.IO) {
             val service = ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
             val mediaItems = async {service?.searchByImdbId(imdbId)}
-            val result = mediaItems.await()?.awaitResponse()?.body()
-            return@withContext result
+            return@withContext mediaItems.await()?.awaitResponse()?.body()
         }
     }
 }
