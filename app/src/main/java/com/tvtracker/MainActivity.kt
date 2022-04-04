@@ -68,7 +68,7 @@ import androidx.compose.material.lightColors
 class MainActivity : ComponentActivity() {
 
     private var openDialog by mutableStateOf(false)
-    private val viewModel: BrowseViewModel by viewModel<BrowseViewModel>()
+    private val viewModel: BrowseViewModel by viewModel()
     private var firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
     private var showFavorites by mutableStateOf(false)
 
@@ -92,7 +92,7 @@ class MainActivity : ComponentActivity() {
             val userMediaItems by viewModel.userMediaItems.observeAsState(initial = emptyList())
             val listState = rememberLazyListState()
             val loading = viewModel.loading
-            var configuration = LocalConfiguration.current
+            val configuration = LocalConfiguration.current
 
             when( configuration.orientation ) {
                 // is the app in portrait mode?

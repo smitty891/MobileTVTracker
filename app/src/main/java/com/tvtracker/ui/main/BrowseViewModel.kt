@@ -12,13 +12,17 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.tvtracker.dto.MediaItem
 import com.tvtracker.dto.User
+import com.tvtracker.repository.FirebaseRepository
 import com.tvtracker.service.IMediaService
 import com.tvtracker.service.MediaService
 import kotlinx.coroutines.launch
 
-class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewModel() {
+class BrowseViewModel(
+    var mediaService: IMediaService = MediaService(),
+    var firebaseRepository: FirebaseRepository = FirebaseRepository()
+) : ViewModel() {
 
-    private lateinit var firestore: FirebaseFirestore
+    private var firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     var user: User? = null
     var selectedMediaItem by mutableStateOf(MediaItem())
 
@@ -38,7 +42,6 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     var userMediaItems: MutableLiveData<List<MediaItem>> = MutableLiveData<List<MediaItem>>()
 
     init {
-        firestore = FirebaseFirestore.getInstance()
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
 
         searchImdb(null)
@@ -69,12 +72,13 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     fun nextPage() {
         viewModelScope.launch {
             // prevent duplicate event due to recompose happening to quickly
-            if((scrollPosition + 1) >= (page * PAGE_SIZE) ){
+            if ((scrollPosition + 1) >= (page * PAGE_SIZE)) {
                 loading = true
                 page += 1
 
-                if(page > 1){
-                    val imdbResponse = mediaService.searchImdb(currentSearchTxt, currentSearchType, page)
+                if (page > 1) {
+                    val imdbResponse =
+                        mediaService.searchImdb(currentSearchTxt, currentSearchType, page)
                     imdbResponse?.let {
                         appendMediaItems(it.results)
                     }
@@ -100,7 +104,7 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
 
     fun getMediaItemDetails() {
         viewModelScope.launch {
-            if(selectedMediaItem.imdbId.isNotEmpty()) {
+            if (selectedMediaItem.imdbId.isNotEmpty()) {
                 loading = true
                 val detailedMediaItem = mediaService.searchByImdbId(selectedMediaItem.imdbId)
                 detailedMediaItem?.let {
@@ -113,60 +117,42 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
 
     fun listenToUserMediaItems() {
         user?.let {
-            firestore.collection("users").document(it.uid).collection("mediaItems").addSnapshotListener {
-                snapshot, e ->
+            firestore.collection("users").document(it.uid).collection("mediaItems")
+                .addSnapshotListener { snapshot, e ->
 
-                if (e != null) {
-                    Log.w("Listen failed", e)
-                    return@addSnapshotListener
-                }
-
-                snapshot?.let {
-                    val mediaItems = ArrayList<MediaItem>()
-                    val documents = snapshot.documents
-                    documents.forEach {
-                        val mediaItem = it.toObject(MediaItem::class.java)
-                        mediaItem?.let {
-                            mediaItems.add(it)
-                        }
+                    if (e != null) {
+                        Log.w("Listen failed", e)
+                        return@addSnapshotListener
                     }
-                    userMediaItems.postValue(mediaItems)
+
+                    snapshot?.let {
+                        val mediaItems = ArrayList<MediaItem>()
+                        val documents = snapshot.documents
+                        documents.forEach {
+                            val mediaItem = it.toObject(MediaItem::class.java)
+                            mediaItem?.let {
+                                mediaItems.add(it)
+                            }
+                        }
+                        userMediaItems.postValue(mediaItems)
+                    }
                 }
-            }
         }
     }
 
     fun saveMediaItem() {
-        if(selectedMediaItem.imdbId.isNotEmpty()) {
-            user?.let { user ->
-                val document =
-                    if (selectedMediaItem.id.isEmpty()) {
-                        firestore.collection("users").document(user.uid).collection("mediaItems").document()
-                    } else {
-                        firestore.collection("users").document(user.uid).collection("mediaItems").document(selectedMediaItem.id)
-                    }
-                selectedMediaItem.id = document.id
-                val handle = document.set(selectedMediaItem)
-                handle.addOnSuccessListener { Log.d("Firebase", "Document Saved") }
-                handle.addOnFailureListener { Log.e("Firebase", "Error: $it") }
-            }
+        if (selectedMediaItem.id.isNotEmpty()) {
+            user?.let { firebaseRepository.saveMediaItem(selectedMediaItem, it, firestore) }
         }
     }
 
     fun deleteMediaItem() {
-        if(selectedMediaItem.id.isNotEmpty()) {
-            user?.let { user ->
-                val document = firestore.collection("users").document(user.uid).collection("mediaItems").document(selectedMediaItem.id)
-                val handle = document.delete()
-                handle.addOnSuccessListener { Log.d("Firebase", "Document Deleted") }
-                handle.addOnFailureListener { Log.e("Firebase", "Error: $it") }
-            }
+        if (selectedMediaItem.id.isNotEmpty()) {
+            user?.let { firebaseRepository.deleteMediaItem(selectedMediaItem, it, firestore) }
         }
     }
 
     fun saveUser() {
-        user?.let {
-            firestore.collection("users").document(it.uid).set(it)
-        }
+        user?.let { firebaseRepository.saveUser(it, firestore) }
     }
 }
