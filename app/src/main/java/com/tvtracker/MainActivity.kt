@@ -198,7 +198,9 @@ class MainActivity : ComponentActivity() {
                     MoviePopup(viewModel.selectedMediaItem)
                 }
                 Scaffold() {
-                    Row( modifier = Modifier.padding( 20.dp ).fillMaxSize() ) {
+                    Row( modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxSize() ) {
                         Column(  ) {
                             TVTrackerMenuLandscape()
                         }
@@ -232,22 +234,6 @@ class MainActivity : ComponentActivity() {
             mediaItem.imageUrl = "https://i.imgur.com/N6EvlmG.png"
         }
 
-        val favIconClickHandler = {
-            if (mediaItem.id.isEmpty()) {
-                viewModel.saveMediaItem()
-            } else {
-                viewModel.deleteMediaItem()
-                openDialog = false;
-            }
-        }
-
-        val favIconColor =
-            if(mediaItem.id.isEmpty()){
-                 Color.Black
-            } else {
-                Color.Yellow
-            }
-
         Dialog(
             onDismissRequest = {
                 openDialog = false
@@ -278,17 +264,7 @@ class MainActivity : ComponentActivity() {
                                 tint = Color.Black
                             )
                         }
-
-                        //Favorites Button
-                        Button(onClick = favIconClickHandler, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
-                            Icon(
-                                Icons.Outlined.Star,
-                                contentDescription = "Favorite",
-                                modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
-                                tint = favIconColor
-                            )
-                        }
-
+                        FavoritesButton(mediaItem = mediaItem)
                     }
                 }
                 Column(modifier = Modifier
@@ -487,7 +463,9 @@ class MainActivity : ComponentActivity() {
         val keyboardController = LocalSoftwareKeyboardController.current
 
         TextField(
-            modifier = Modifier.fillMaxWidth().padding( 10.dp ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
             value = text,
             onValueChange = {
                 text = it
@@ -551,22 +529,6 @@ class MainActivity : ComponentActivity() {
             mediaItem.imageUrl = "https://i.imgur.com/N6EvlmG.png"
         }
 
-        val favIconClickHandler = {
-            if (mediaItem.id.isEmpty()) {
-                viewModel.saveMediaItem()
-            } else {
-                viewModel.deleteMediaItem()
-                openDialog = false;
-            }
-        }
-
-        val favIconColor =
-            if(mediaItem.id.isEmpty()){
-                Color.Black
-            } else {
-                Color.Yellow
-            }
-
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -592,28 +554,50 @@ class MainActivity : ComponentActivity() {
                 alignment = Alignment.CenterStart,
                 contentScale = ContentScale.FillBounds
             )
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp),
-                verticalArrangement = Arrangement.SpaceEvenly,
-                horizontalAlignment = CenterHorizontally
-            ) {
-                //Favorites Button
-                Button(onClick = favIconClickHandler, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
-                    Icon(
-                        Icons.Outlined.Star,
-                        contentDescription = "Favorite",
-                        modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
-                        tint = favIconColor
-                    )
+            Box(contentAlignment = Alignment.TopEnd){
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp),
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = CenterHorizontally
+                ) {
+                    Text(mediaItem.title, textAlign = TextAlign.Center)
+                    Text(mediaItem.year)
                 }
-                Text(mediaItem.title, textAlign = TextAlign.Center)
-                Text(mediaItem.year)
+                FavoritesButton(mediaItem = mediaItem)
             }
         }
     }
 
+    @Composable
+    fun FavoritesButton(mediaItem: MediaItem) {
+        val favIconClickHandler = {
+            if (mediaItem.id.isEmpty()) {
+                viewModel.saveMediaItem()
+            } else {
+                viewModel.deleteMediaItem()
+                openDialog = false;
+            }
+        }
+
+        val favIconColor =
+            if (mediaItem.id.isEmpty()) {
+                Color.Black
+            } else {
+                Color.Yellow
+            }
+
+        //Favorites Button
+        Button(onClick = favIconClickHandler, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+            Icon(
+                Icons.Outlined.Star,
+                contentDescription = "Favorite",
+                modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
+                tint = favIconColor
+            )
+        }
+    }
 
 
     @Composable
