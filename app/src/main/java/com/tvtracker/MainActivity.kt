@@ -557,13 +557,13 @@ class MainActivity : ComponentActivity() {
             Box(contentAlignment = Alignment.TopEnd){
                 Column(
                     Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth().fillMaxHeight()
                         .padding(5.dp),
-                    verticalArrangement = Arrangement.SpaceEvenly,
-                    horizontalAlignment = CenterHorizontally
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = CenterHorizontally,
                 ) {
                     Text(mediaItem.title, textAlign = TextAlign.Center)
-                    Text(mediaItem.year)
+                    Text(mediaItem.year, textAlign = TextAlign.Center)
                 }
                 FavoritesButton(mediaItem = mediaItem)
             }
@@ -573,10 +573,10 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun FavoritesButton(mediaItem: MediaItem) {
         val favIconClickHandler = {
-            if (mediaItem.id.isEmpty()) {
+            if (mediaItem.id.isEmpty()) { //if we don't have it in our DB, save it
                 viewModel.saveMediaItem()
             } else {
-                viewModel.deleteMediaItem()
+                viewModel.deleteMediaItem() //if it's in our db, that means it's the user toggling to delete it
                 openDialog = false;
             }
         }
