@@ -1,3 +1,3 @@
 package com.tvtracker.dto
 
-data class User(var uid: String = "", var displayName: String?)
+data class User(var userId: String = "", var displayName: String?)

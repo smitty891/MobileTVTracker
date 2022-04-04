@@ -20,7 +20,7 @@ class IntegrationTests {
     var imdbResponse: ImdbResponse? = null
 
     @Test
-    fun `Given media data is available when I search BattleBots then I should receive media results` () = runTest {
+    fun `Given media data is available when I search BattleBots then I should receive a confirmation response` () = runTest {
         givenMediaServiceIsInitialized()
         whenUserSearchesBattleBots()
         thenMediaResultsContainsBattleBots()
