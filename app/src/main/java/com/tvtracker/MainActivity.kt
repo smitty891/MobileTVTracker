@@ -189,7 +189,7 @@ class MainActivity : ComponentActivity() {
         }
 
         val favIconClickHandler = {
-            if (mediaItem.id.isEmpty()) {
+            if (mediaItem.mediaId.isEmpty()) {
                 viewModel.saveMediaItem()
             } else {
                 viewModel.deleteMediaItem()
@@ -198,7 +198,7 @@ class MainActivity : ComponentActivity() {
         }
 
         val favIconColor =
-            if(mediaItem.id.isEmpty()){
+            if(mediaItem.mediaId.isEmpty()){
                  Color.Black
             } else {
                 Color.Yellow
@@ -517,7 +517,7 @@ class MainActivity : ComponentActivity() {
                     detectTapGestures(
                         onTap = {
                             viewModel.selectedMediaItem = mediaItem
-                            if(mediaItem.id.isEmpty()){
+                            if(mediaItem.mediaId.isEmpty()){
                                 viewModel.getMediaItemDetails()
                             }
                             openDialog = true
