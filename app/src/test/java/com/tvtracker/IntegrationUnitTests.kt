@@ -36,22 +36,4 @@ class IntegrationUnitTests {
         Dispatchers.resetMain()
         mainThreadSurrogate.close()
     }
-
-    @Test
-    fun `given a view model with live data when populated with media then results show the name BattleBots` () {
-        givenViewModelIsInitializedWithMockData()
-        whenMediaServiceFetchMoviesInvoked()
-        thenMediaResultsContainsBattleBots()
-    }
-
-    private fun givenViewModelIsInitializedWithMockData() {
-
-    }
-
-    private fun  whenMediaServiceFetchMoviesInvoked() {
-
-    }
-
-    private fun  thenMediaResultsContainsBattleBots() {
-    }
 }
