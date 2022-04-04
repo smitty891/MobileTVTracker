@@ -63,6 +63,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.tvtracker.dto.User
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
+import org.intellij.lang.annotations.JdkConstants
 
 
 class MainActivity : ComponentActivity() {
@@ -177,6 +178,49 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 )
+            }
+        }
+    }
+
+    @ExperimentalComposeUiApi
+    @Composable
+    fun MainContentLandscape(
+        imdbMediaItems: List<MediaItem>,
+        userMediaItems: List<MediaItem>,
+        listState: LazyListState,
+        loading: Boolean,
+        viewModel: BrowseViewModel
+    ) {
+        TvTrackerTheme {
+            // A surface container using the 'background' color from the theme
+            Surface(color = MaterialTheme.colors.background) {
+                if (openDialog){
+                    MoviePopup(viewModel.selectedMediaItem)
+                }
+                Scaffold() {
+                    Row( modifier = Modifier.padding( 20.dp ).fillMaxSize() ) {
+                        Column(  ) {
+                            TVTrackerMenuLandscape()
+                        }
+                        Column( verticalArrangement = Arrangement.spacedBy(10.dp) ) {
+                            SearchBar(
+                                onTextChanged = {
+                                    viewModel.searchTxt = it
+                                },
+                                onSearchClicked = {
+                                    viewModel.searchImdb(listState)
+                                }
+                            )
+                            LoadingSpinner(isDisplayed = loading)
+
+                            if (showFavorites) {
+                                UserMediaItemColumn(userMediaItems)
+                            } else {
+                                ImdbMediaItemColumn(listState, imdbMediaItems)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -320,50 +364,48 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @ExperimentalComposeUiApi
-    @Composable
-    fun MainContentLandscape(
-        imdbMediaItems: List<MediaItem>,
-        userMediaItems: List<MediaItem>,
-        listState: LazyListState,
-        loading: Boolean,
-        viewModel: BrowseViewModel
-    ) {
-        TvTrackerTheme {
-            // A surface container using the 'background' color from the theme
-            Surface(color = MaterialTheme.colors.background) {
-                Scaffold(
-                    topBar = {
-                        Column {
-                            Row {
-                                TVTrackerMenu()
-                            }
-                            Row {
-                                SearchBar(
-                                    onTextChanged = {
-                                        viewModel.searchTxt = it
-                                    },
-                                    onSearchClicked = {
-                                        viewModel.searchImdb(listState)
-                                    }
-                                )
-                            }
-                        }
-                    },
-                    content = {
-                        LoadingSpinner(isDisplayed = loading)
 
-                        if (showFavorites) {
-                            UserMediaItemColumn(userMediaItems)
-                        } else {
-                            ImdbMediaItemColumn(listState, imdbMediaItems)
-                        }
-                    }
-                )
+    @Composable
+    fun TVTrackerMenuLandscape() {
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            horizontalAlignment = CenterHorizontally
+        ) {
+            Row( modifier = Modifier.padding( 20.dp ) ) {
+                Text(text = "TV Tracker", fontSize = 35.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 10.dp))
             }
+            Row( modifier = Modifier.padding(15.dp) ) {
+                Button(onClick = {
+                    showFavorites = false
+                }, content = { Text("Browse") })
+            }
+            Row( modifier = Modifier.padding(15.dp) ) {
+                Button(onClick = {
+                    if (firebaseUser == null) {
+                        signIn()
+                    } else {
+                        showFavorites = true
+                    }
+                }, content = { Text("Favorites") })
+            }
+            Row( modifier = Modifier.padding(15.dp) ) {
+                Button(onClick = {
+                    val share = Intent.createChooser(Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, "Check this out")
+
+                        // (Optional) Here we're setting the title of the content
+                        putExtra(Intent.EXTRA_TITLE, "See a preview")
+
+                        // (Optional) Here we're passing a content URI to an image to be displayed
+                        // data = contentUri
+                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    }, null)
+                    startActivity(share)
+                }, content = { Text( "Share") })
+            }   
         }
     }
-
 
     @Composable
     fun TVTrackerMenu() {
@@ -445,7 +487,7 @@ class MainActivity : ComponentActivity() {
         val keyboardController = LocalSoftwareKeyboardController.current
 
         TextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding( 10.dp ),
             value = text,
             onValueChange = {
                 text = it
@@ -517,7 +559,7 @@ class MainActivity : ComponentActivity() {
                     detectTapGestures(
                         onTap = {
                             viewModel.selectedMediaItem = mediaItem
-                            if(mediaItem.id.isEmpty()){
+                            if (mediaItem.id.isEmpty()) {
                                 viewModel.getMediaItemDetails()
                             }
                             openDialog = true
