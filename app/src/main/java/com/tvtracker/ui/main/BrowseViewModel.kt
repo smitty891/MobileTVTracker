@@ -113,7 +113,7 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
 
     fun listenToUserMediaItems() {
         user?.let {
-            firestore.collection("users").document(it.uid).collection("mediaItems").addSnapshotListener {
+            firestore.collection("users").document(it.userId).collection("mediaItems").addSnapshotListener {
                 snapshot, e ->
 
                 if (e != null) {
@@ -141,9 +141,9 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
             user?.let { user ->
                 val document =
                     if (selectedMediaItem.id.isEmpty()) {
-                        firestore.collection("users").document(user.uid).collection("mediaItems").document()
+                        firestore.collection("users").document(user.userId).collection("mediaItems").document()
                     } else {
-                        firestore.collection("users").document(user.uid).collection("mediaItems").document(selectedMediaItem.id)
+                        firestore.collection("users").document(user.userId).collection("mediaItems").document(selectedMediaItem.id)
                     }
                 selectedMediaItem.id = document.id
                 val handle = document.set(selectedMediaItem)
@@ -156,7 +156,7 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     fun deleteMediaItem() {
         if(selectedMediaItem.id.isNotEmpty()) {
             user?.let { user ->
-                val document = firestore.collection("users").document(user.uid).collection("mediaItems").document(selectedMediaItem.id)
+                val document = firestore.collection("users").document(user.userId).collection("mediaItems").document(selectedMediaItem.id)
                 val handle = document.delete()
                 handle.addOnSuccessListener { Log.d("Firebase", "Document Deleted") }
                 handle.addOnFailureListener { Log.e("Firebase", "Error: $it") }
@@ -166,7 +166,7 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
 
     fun saveUser() {
         user?.let {
-            firestore.collection("users").document(it.uid).set(it)
+            firestore.collection("users").document(it.userId).set(it)
         }
     }
 }
