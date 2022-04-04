@@ -4,6 +4,7 @@ import com.tvtracker.api.ImdbRetrofitClientInstance
 import com.tvtracker.dao.IMediaItemDAO
 import com.tvtracker.dto.ImdbResponse
 import com.tvtracker.dto.MediaItem
+import com.tvtracker.dto.MoviesWatched
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -16,8 +17,7 @@ class MediaService : IMediaService {
         return withContext(Dispatchers.IO) {
             val service = ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
             val mediaItems = async {service?.searchImdb(text, type, page)}
-            val result = mediaItems.await()?.awaitResponse()?.body()
-            return@withContext result
+            return@withContext mediaItems.await()?.awaitResponse()?.body()
         }
     }
 
@@ -25,8 +25,15 @@ class MediaService : IMediaService {
         return withContext(Dispatchers.IO) {
             val service = ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
             val mediaItems = async {service?.searchByImdbId(imdbId)}
-            val result = mediaItems.await()?.awaitResponse()?.body()
-            return@withContext result
+            return@withContext mediaItems.await()?.awaitResponse()?.body()
+        }
+    }
+
+    override suspend fun addWatchedMovie(userId: Int, movieId: Int): MoviesWatched {
+        return withContext(Dispatchers.IO) {
+            val service = ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
+            val mediaItems = async {service?.addWatchedMovie(movieId)}
+            return@withContext mediaItems.await()?.awaitResponse()?.body()
         }
     }
 }
