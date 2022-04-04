@@ -191,7 +191,38 @@ class MainActivity : ComponentActivity() {
         loading: Boolean,
         viewModel: BrowseViewModel
     ) {
+        TvTrackerTheme {
+            // A surface container using the 'background' color from the theme
+            Surface(color = MaterialTheme.colors.background) {
+                if (openDialog){
+                    MoviePopup(viewModel.selectedMediaItem)
+                }
+                Scaffold() {
+                    Row( modifier = Modifier.padding( 20.dp ).fillMaxSize() ) {
+                        Column(  ) {
+                            TVTrackerMenuLandscape()
+                        }
+                        Column( verticalArrangement = Arrangement.spacedBy(10.dp) ) {
+                            SearchBar(
+                                onTextChanged = {
+                                    viewModel.searchTxt = it
+                                },
+                                onSearchClicked = {
+                                    viewModel.searchImdb(listState)
+                                }
+                            )
+                            LoadingSpinner(isDisplayed = loading)
 
+                            if (showFavorites) {
+                                UserMediaItemColumn(userMediaItems)
+                            } else {
+                                ImdbMediaItemColumn(listState, imdbMediaItems)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @OptIn(ExperimentalComposeUiApi::class)
