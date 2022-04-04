@@ -160,8 +160,9 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
                 val handle = document.delete()
                 handle.addOnSuccessListener { Log.d("Firebase", "Document Deleted") }
                 handle.addOnFailureListener { Log.e("Firebase", "Error: $it") }
+                selectedMediaItem.id = ""
             }
-            selectedMediaItem.id = ""
+
         }
     }
 
