@@ -573,6 +573,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun FavoritesButton(mediaItem: MediaItem) {
         val favIconClickHandler = {
+            viewModel.selectedMediaItem = mediaItem
             if (mediaItem.id.isEmpty()) { //if we don't have it in our DB, save it
                 viewModel.saveMediaItem()
             } else {

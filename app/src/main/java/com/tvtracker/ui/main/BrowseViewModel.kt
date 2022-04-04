@@ -140,9 +140,9 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
         if(selectedMediaItem.imdbId.isNotEmpty()) {
             user?.let { user ->
                 val document =
-                    if (selectedMediaItem.id.isEmpty()) {
+                    if (selectedMediaItem.id.isEmpty()) { //New
                         firestore.collection("users").document(user.uid).collection("mediaItems").document()
-                    } else {
+                    } else { //Edit
                         firestore.collection("users").document(user.uid).collection("mediaItems").document(selectedMediaItem.id)
                     }
                 selectedMediaItem.id = document.id
@@ -161,6 +161,7 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
                 handle.addOnSuccessListener { Log.d("Firebase", "Document Deleted") }
                 handle.addOnFailureListener { Log.e("Firebase", "Error: $it") }
             }
+            selectedMediaItem.id = ""
         }
     }
 
