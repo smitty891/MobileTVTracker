@@ -551,6 +551,22 @@ class MainActivity : ComponentActivity() {
             mediaItem.imageUrl = "https://i.imgur.com/N6EvlmG.png"
         }
 
+        val favIconClickHandler = {
+            if (mediaItem.id.isEmpty()) {
+                viewModel.saveMediaItem()
+            } else {
+                viewModel.deleteMediaItem()
+                openDialog = false;
+            }
+        }
+
+        val favIconColor =
+            if(mediaItem.id.isEmpty()){
+                Color.Black
+            } else {
+                Color.Yellow
+            }
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -583,6 +599,15 @@ class MainActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = CenterHorizontally
             ) {
+                //Favorites Button
+                Button(onClick = favIconClickHandler, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), elevation = ButtonDefaults.elevation(0.dp, 0.dp)) {
+                    Icon(
+                        Icons.Outlined.Star,
+                        contentDescription = "Favorite",
+                        modifier = Modifier.size(ButtonDefaults.IconSize + 16.dp),
+                        tint = favIconColor
+                    )
+                }
                 Text(mediaItem.title, textAlign = TextAlign.Center)
                 Text(mediaItem.year)
             }
