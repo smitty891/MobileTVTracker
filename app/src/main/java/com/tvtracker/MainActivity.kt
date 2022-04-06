@@ -385,6 +385,22 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun TVTrackerMenu() {
+
+        val defaultBtnColor = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+        val selectedBtnColor = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primaryVariant)
+
+        val favBtnColor = if(showFavorites) {
+            selectedBtnColor
+        } else {
+            defaultBtnColor
+        }
+
+        val browseBtnColor = if(!showFavorites) {
+            selectedBtnColor
+        } else {
+            defaultBtnColor
+        }
+
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = CenterHorizontally
@@ -397,7 +413,7 @@ class MainActivity : ComponentActivity() {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Button(onClick = {
                         showFavorites = false
-                    }, content = { Text("Browse") })
+                    }, content = { Text("Browse") }, colors = browseBtnColor)
                 }
                 Column(modifier = Modifier.padding(16.dp)) {
                     Button(onClick = {
@@ -406,24 +422,24 @@ class MainActivity : ComponentActivity() {
                         } else {
                             showFavorites = true
                         }
-                    }, content = { Text("Favorites") })
+                    }, content = { Text("Favorites") }, colors = favBtnColor)
                 }
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Button(onClick = {
-                        val share = Intent.createChooser(Intent().apply {
-                            action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, "Check this out")
-
-                            // (Optional) Here we're setting the title of the content
-                            putExtra(Intent.EXTRA_TITLE, "See a preview")
-
-                            // (Optional) Here we're passing a content URI to an image to be displayed
-                            // data = contentUri
-                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        }, null)
-                        startActivity(share)
-                    }, content = { Text( "Share") })
-                }
+//                Column(modifier = Modifier.padding(16.dp)) {
+//                    Button(onClick = {
+//                        val share = Intent.createChooser(Intent().apply {
+//                            action = Intent.ACTION_SEND
+//                            putExtra(Intent.EXTRA_TEXT, "Check this out")
+//
+//                            // (Optional) Here we're setting the title of the content
+//                            putExtra(Intent.EXTRA_TITLE, "See a preview")
+//
+//                            // (Optional) Here we're passing a content URI to an image to be displayed
+//                            // data = contentUri
+//                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+//                        }, null)
+//                        startActivity(share)
+//                    }, content = { Text( "Share") })
+//                }
             }
         }
     }
@@ -557,7 +573,8 @@ class MainActivity : ComponentActivity() {
             Box(contentAlignment = Alignment.TopEnd){
                 Column(
                     Modifier
-                        .fillMaxWidth().fillMaxHeight()
+                        .fillMaxWidth()
+                        .fillMaxHeight()
                         .padding(5.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = CenterHorizontally,
