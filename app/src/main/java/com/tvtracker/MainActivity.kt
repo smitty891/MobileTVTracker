@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val imdbMediaItems by viewModel.imdbMediaItems.observeAsState(initial = emptyList())
-            val userMediaItems by viewModel.userMediaItems.observeAsState(initial = emptyList())
+            val userMediaItems by viewModel.favMediaItems.observeAsState(initial = emptyList())
             val listState = rememberLazyListState()
             val loading = viewModel.loading
             var configuration = LocalConfiguration.current
@@ -157,14 +157,15 @@ class MainActivity : ComponentActivity() {
                                 TVTrackerMenu()
                             }
                             Row {
-                                SearchBar(
-                                    onTextChanged = {
-                                        viewModel.searchTxt = it
-                                    },
-                                    onSearchClicked = {
-                                        viewModel.searchImdb(listState)
-                                    }
-                                )
+                                if (showFavorites) {
+                                    FavSearchBar()
+                                } else {
+                                    BrowseSearchBar(
+                                        onSearchClicked = {
+                                            viewModel.searchImdb(listState)
+                                        }
+                                    )
+                                }
                             }
                         }
                     },
@@ -205,14 +206,15 @@ class MainActivity : ComponentActivity() {
                             TVTrackerMenuLandscape()
                         }
                         Column( verticalArrangement = Arrangement.spacedBy(10.dp) ) {
-                            SearchBar(
-                                onTextChanged = {
-                                    viewModel.searchTxt = it
-                                },
-                                onSearchClicked = {
-                                    viewModel.searchImdb(listState)
-                                }
-                            )
+                            if (showFavorites) {
+                                FavSearchBar()
+                            } else {
+                                BrowseSearchBar(
+                                    onSearchClicked = {
+                                        viewModel.searchImdb(listState)
+                                    }
+                                )
+                            }
                             LoadingSpinner(isDisplayed = loading)
 
                             if (showFavorites) {
@@ -457,10 +459,7 @@ class MainActivity : ComponentActivity() {
                 //TVTrackerMenu()
             }
             Row {
-                SearchBar(
-                    onTextChanged = {
-
-                    },
+                BrowseSearchBar(
                     onSearchClicked = {
 
                     }
@@ -471,21 +470,17 @@ class MainActivity : ComponentActivity() {
 
     @ExperimentalComposeUiApi
     @Composable
-    fun SearchBar(
-        onTextChanged: (String) -> Unit,
+    fun BrowseSearchBar(
         onSearchClicked: () -> Unit
     ) {
-        var text by remember { mutableStateOf(TextFieldValue("")) }
         val keyboardController = LocalSoftwareKeyboardController.current
-
         TextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
-            value = text,
+            value = viewModel.imdbSearchTxt,
             onValueChange = {
-                text = it
-                onTextChanged(it.text)
+                viewModel.imdbSearchTxt = it
             },
             singleLine = true,
 
@@ -509,6 +504,29 @@ class MainActivity : ComponentActivity() {
             keyboardActions = KeyboardActions(
                 onSearch = {
                     onSearchClicked()
+                    keyboardController?.hide()
+                }
+            )
+        )
+    }
+
+    @ExperimentalComposeUiApi
+    @Composable
+    fun FavSearchBar() {
+        val keyboardController = LocalSoftwareKeyboardController.current
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            value = viewModel.favSearchTxt,
+            onValueChange = {
+                viewModel.favSearchTxt = it
+                viewModel.filterFavMediaItems()
+            },
+            singleLine = true,
+            label = {Text(text= "Search for a Movie or TV Show", color= Color.White)},
+            keyboardActions = KeyboardActions(
+                onDone = {
                     keyboardController?.hide()
                 }
             )

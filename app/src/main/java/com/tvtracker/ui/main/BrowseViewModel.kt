@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,7 +25,8 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
 
     val PAGE_SIZE = 10
 
-    var searchTxt = "movie"
+    var favSearchTxt by mutableStateOf(TextFieldValue(""))
+    var imdbSearchTxt by mutableStateOf(TextFieldValue(""))
     var searchType = "movie"
     var page by mutableStateOf(1)
     var loading by mutableStateOf(false)
@@ -35,7 +37,8 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     private var currentSearchType = ""
 
     var imdbMediaItems: MutableLiveData<List<MediaItem>> = MutableLiveData<List<MediaItem>>()
-    var userMediaItems: MutableLiveData<List<MediaItem>> = MutableLiveData<List<MediaItem>>()
+    var favMediaItems: MutableLiveData<List<MediaItem>> = MutableLiveData<List<MediaItem>>()
+    var userMediaItems = ArrayList<MediaItem>()
 
     init {
         firestore = FirebaseFirestore.getInstance()
@@ -49,11 +52,15 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
             // Resets search results whenever user searches for something new
             resetMediaItems()
 
-            currentSearchTxt = searchTxt
+            currentSearchTxt = imdbSearchTxt.text
             currentSearchType = searchType
             page = 1
 
             loading = true
+
+            val searchTxt = currentSearchTxt.ifEmpty {
+                "movie"
+            }
 
             val imdbResponse = mediaService.searchImdb(searchTxt, searchType, page)
             imdbResponse?.let {
@@ -130,10 +137,22 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
                             mediaItems.add(it)
                         }
                     }
-                    userMediaItems.postValue(mediaItems)
+                    userMediaItems = mediaItems
+                    filterFavMediaItems()
                 }
             }
         }
+    }
+
+    fun filterFavMediaItems() {
+        val mediaItems = if (favSearchTxt.text.isEmpty()) {
+            userMediaItems
+        } else {
+            userMediaItems.filter { mediaItem ->
+                mediaItem.title.uppercase().contains(favSearchTxt.text.uppercase())
+            }
+        }
+        favMediaItems.postValue(mediaItems)
     }
 
     fun saveMediaItem() {
