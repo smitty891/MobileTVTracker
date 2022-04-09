@@ -349,15 +349,15 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.fillMaxHeight(),
             horizontalAlignment = CenterHorizontally
         ) {
-            Row( modifier = Modifier.padding( 20.dp ) ) {
+            Row( modifier = Modifier.padding( 10.dp ) ) {
                 Text(text = "TV Tracker", fontSize = 35.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 10.dp))
             }
-            Row( modifier = Modifier.padding(15.dp) ) {
+            Row( modifier = Modifier.padding(20.dp) ) {
                 Button(onClick = {
                     showFavorites = false
                 }, content = { Text("Browse") })
             }
-            Row( modifier = Modifier.padding(15.dp) ) {
+            Row( modifier = Modifier.padding(20.dp) ) {
                 Button(onClick = {
                     if (firebaseUser == null) {
                         signIn()
@@ -366,7 +366,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }, content = { Text("Favorites") })
             }
-            Row( modifier = Modifier.padding(15.dp) ) {
+            Row( modifier = Modifier.padding(20.dp) ) {
                 Button(onClick = {
                     val share = Intent.createChooser(Intent().apply {
                         action = Intent.ACTION_SEND
