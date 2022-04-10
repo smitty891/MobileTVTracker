@@ -428,19 +428,14 @@ class MainActivity : ComponentActivity() {
                 }
                 Column(modifier = Modifier.padding(16.dp)) {
                     Button(onClick = {
-                        val share = Intent.createChooser(Intent().apply {
+                        val sendIntent: Intent = Intent().apply {
                             action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, "Check this out")
-
-                            // (Optional) Here we're setting the title of the content
-                            putExtra(Intent.EXTRA_TITLE, "See a preview")
-
-                            // (Optional) Here we're passing a content URI to an image to be displayed
-                            // data = contentUri
-                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        }, null)
-                        startActivity(share)
-                    }, content = { Text( "Share") })
+                            putExtra(Intent.EXTRA_TEXT, "Check this out.")
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        startActivity(shareIntent)
+                    }, content = { Text("Share")})
                 }
             }
         }
