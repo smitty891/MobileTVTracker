@@ -158,6 +158,7 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     fun saveMediaItem() {
         if(selectedMediaItem.imdbId.isNotEmpty()) {
             user?.let { user ->
+                loading = true
                 val document =
                     if (selectedMediaItem.id.isEmpty()) { //New
                         firestore.collection("users").document(user.uid).collection("mediaItems").document()
@@ -166,8 +167,14 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
                     }
                 selectedMediaItem.id = document.id
                 val handle = document.set(selectedMediaItem)
-                handle.addOnSuccessListener { Log.d("Firebase", "Document Saved") }
-                handle.addOnFailureListener { Log.e("Firebase", "Error: $it") }
+                handle.addOnSuccessListener {
+                    loading = false
+                    Log.d("Firebase", "Document Saved")
+                }
+                handle.addOnFailureListener {
+                    loading = false
+                    Log.e("Firebase", "Error: $it")
+                }
             }
         }
     }
@@ -175,10 +182,17 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     fun deleteMediaItem() {
         if(selectedMediaItem.id.isNotEmpty()) {
             user?.let { user ->
+                loading = true
                 val document = firestore.collection("users").document(user.uid).collection("mediaItems").document(selectedMediaItem.id)
                 val handle = document.delete()
-                handle.addOnSuccessListener { Log.d("Firebase", "Document Deleted") }
-                handle.addOnFailureListener { Log.e("Firebase", "Error: $it") }
+                handle.addOnSuccessListener {
+                    loading = false
+                    Log.d("Firebase", "Document Deleted")
+                }
+                handle.addOnFailureListener {
+                    loading = false
+                    Log.e("Firebase", "Error: $it")
+                }
                 selectedMediaItem.id = ""
             }
 

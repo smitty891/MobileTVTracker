@@ -14,19 +14,19 @@ class MediaService : IMediaService {
 
     override suspend fun searchImdb(text: String, type: String, page: Int): ImdbResponse? {
         return withContext(Dispatchers.IO) {
-            val service = ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
-            val mediaItems = async {service?.searchImdb(text, type, page)}
-            val result = mediaItems.await()?.awaitResponse()?.body()
-            return@withContext result
+            val service =
+                ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
+            val mediaItems = async { service?.searchImdb(text, type, page) }
+            return@withContext mediaItems.await()?.awaitResponse()?.body()
         }
     }
 
     override suspend fun searchByImdbId(imdbId: String): MediaItem? {
         return withContext(Dispatchers.IO) {
-            val service = ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
-            val mediaItems = async {service?.searchByImdbId(imdbId)}
-            val result = mediaItems.await()?.awaitResponse()?.body()
-            return@withContext result
+            val service =
+                ImdbRetrofitClientInstance.retrofitInstance?.create(IMediaItemDAO::class.java)
+            val mediaItems = async { service?.searchByImdbId(imdbId) }
+            return@withContext mediaItems.await()?.awaitResponse()?.body()
         }
     }
 }
