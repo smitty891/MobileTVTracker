@@ -29,4 +29,8 @@ class MediaService : IMediaService {
             return@withContext result
         }
     }
+
+    override suspend fun addFavoriteMovie(userId: Int, movieId: Int) {
+        TODO("Not yet implemented")
+    }
 }
