@@ -524,7 +524,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun UserMediaItemColumn(mediaItems: List<MediaItem>) {
         LazyColumn() {
-            itemsIndexed(mediaItems) { index, item ->
+            itemsIndexed(mediaItems) { _, item ->
                 MediaItemRow(item)
             }
         }
@@ -535,7 +535,7 @@ class MainActivity : ComponentActivity() {
         LazyColumn(state = listState) {
             itemsIndexed(mediaItems) { index, item ->
                 viewModel.onChangeScrollPosition(index)
-                if ((index + 1) >= (viewModel.page * viewModel.PAGE_SIZE) && !viewModel.loading) {
+                if ((index + 1) >= (viewModel.page * viewModel.pageSize) && !viewModel.loading) {
                     viewModel.nextPage()
                 }
                 MediaItemRow(item)

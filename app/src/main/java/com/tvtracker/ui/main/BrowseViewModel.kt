@@ -19,11 +19,11 @@ import kotlinx.coroutines.launch
 
 class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewModel() {
 
-    private lateinit var firestore: FirebaseFirestore
+    private var firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     var user: User? = null
     var selectedMediaItem by mutableStateOf(MediaItem())
 
-    val PAGE_SIZE = 10
+    val pageSize = 10
 
     var favSearchTxt by mutableStateOf(TextFieldValue(""))
     var imdbSearchTxt by mutableStateOf(TextFieldValue(""))
@@ -41,7 +41,6 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     var userMediaItems = ArrayList<MediaItem>()
 
     init {
-        firestore = FirebaseFirestore.getInstance()
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
 
         searchImdb(null)
@@ -76,7 +75,7 @@ class BrowseViewModel(var mediaService: IMediaService = MediaService()): ViewMod
     fun nextPage() {
         viewModelScope.launch {
             // prevent duplicate event due to recompose happening to quickly
-            if((scrollPosition + 1) >= (page * PAGE_SIZE) ){
+            if((scrollPosition + 1) >= (page * pageSize) ){
                 loading = true
                 page += 1
 
